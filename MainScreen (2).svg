@@ -46,9 +46,9 @@
      inkscape:window-height="705"
      id="namedview4138"
      showgrid="false"
-     inkscape:zoom="0.64841538"
-     inkscape:cx="467.92947"
-     inkscape:cy="434.9375"
+     inkscape:zoom="1.2968308"
+     inkscape:cx="549.53636"
+     inkscape:cy="521.22241"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
@@ -69,16 +69,16 @@
      style="fill:#990000;fill-opacity:1;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
      id="rect4970"
      width="176.0696"
-     height="71.241013"
+     height="79.723228"
      x="493.99377"
-     y="146.35202" />
+     y="140.95424" />
   <rect
      style="fill:#c0c0c0;fill-opacity:1;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
      id="rect4968"
      width="145.84077"
      height="15.026019"
      x="509.72693"
-     y="171.10075"
+     y="172.78741"
      rx="4.0286674"
      ry="3.8968201" />
   <flowRoot
@@ -666,18 +666,18 @@
      xml:space="preserve"
      style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
      x="513.21326"
-     y="181.65816"
+     y="183.34482"
      id="text4589-32"
      sodipodi:linespacing="125%"
      inkscape:export-xdpi="90"
      inkscape:export-ydpi="90"><tspan
        sodipodi:role="line"
        x="513.21326"
-       y="181.65816"
+       y="183.34482"
        id="tspan4593-90">Knock knock!</tspan></text>
   <path
      style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99861997px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-     d="m 492.74659,217.88543 177.1258,0"
+     d="m 492.74659,221.35543 177.1258,0"
      id="path4223-9-1-6-8-8"
      inkscape:connector-curvature="0"
      sodipodi:nodetypes="cc"
@@ -719,7 +719,7 @@
      xml:space="preserve"
      style="font-style:normal;font-weight:normal;font-size:15px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
      x="524.13623"
-     y="241.34836"
+     y="243.34836"
      id="text4585-5-1"
      sodipodi:linespacing="125%"
      inkscape:export-xdpi="90"
@@ -727,12 +727,12 @@
        sodipodi:role="line"
        id="tspan4587-0-1"
        x="524.13623"
-       y="241.34836">Juan Diego</tspan></text>
+       y="243.34836">Juan Diego</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
      x="508.79639"
-     y="266.62003"
+     y="268.62003"
      id="text4589-1-7"
      sodipodi:linespacing="125%"
      inkscape:export-xdpi="90"
@@ -740,13 +740,13 @@
        sodipodi:role="line"
        id="tspan4591-7-9"
        x="508.79639"
-       y="266.62003">¿Recibiste mi mensaje?</tspan><tspan
+       y="268.62003">¿Recibiste mi mensaje?</tspan><tspan
        sodipodi:role="line"
        x="508.79639"
-       y="279.12003"
+       y="281.12003"
        id="tspan4593-0-9" /></text>
   <g
-     transform="matrix(0.55718411,0,0,0.55718411,225.39729,111.78236)"
+     transform="matrix(0.55718411,0,0,0.55718411,225.39729,113.78236)"
      id="g4317-9-4-3"
      inkscape:export-xdpi="90"
      inkscape:export-ydpi="90">
@@ -825,7 +825,7 @@
      width="41.370991"
      height="14.89589"
      x="510.23901"
-     y="194.71921"
+     y="198.71921"
      rx="3.8968179"
      ry="3.8968179"
      inkscape:export-xdpi="90"
@@ -834,7 +834,7 @@
      xml:space="preserve"
      style="font-style:normal;font-weight:normal;font-size:11.69045353px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
      x="514.26111"
-     y="205.81735"
+     y="209.81735"
      id="text4924-0"
      sodipodi:linespacing="125%"
      inkscape:export-xdpi="90"
@@ -842,14 +842,14 @@
        sodipodi:role="line"
        id="tspan4926-42"
        x="514.26111"
-       y="205.81735">Reply</tspan></text>
+       y="209.81735">Reply</tspan></text>
   <rect
      style="opacity:1;fill:#c0c0c0;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.77936357;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
      id="rect4898-7-4"
      width="41.370991"
      height="14.89589"
      x="563.4314"
-     y="194.49892"
+     y="198.49892"
      rx="3.8968179"
      ry="3.8968179"
      inkscape:export-xdpi="90"
@@ -858,7 +858,7 @@
      xml:space="preserve"
      style="font-style:normal;font-weight:normal;font-size:9.74204445px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
      x="566.54285"
-     y="205.59711"
+     y="209.59711"
      id="text4924-3-2"
      sodipodi:linespacing="125%"
      inkscape:export-xdpi="90"
@@ -866,14 +866,14 @@
        sodipodi:role="line"
        id="tspan4926-8-9"
        x="566.54285"
-       y="205.59711">Snooze</tspan></text>
+       y="209.59711">Snooze</tspan></text>
   <rect
      style="opacity:1;fill:#c0c0c0;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.77936357;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
      id="rect4898-3-5"
      width="41.370991"
      height="14.89589"
      x="614.55542"
-     y="194.49892"
+     y="198.49892"
      rx="3.8968179"
      ry="3.8968179"
      inkscape:export-xdpi="90"
@@ -882,7 +882,7 @@
      xml:space="preserve"
      style="font-style:normal;font-weight:normal;font-size:9.74204445px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
      x="619.03296"
-     y="204.91406"
+     y="208.91406"
      id="text4924-5-4"
      sodipodi:linespacing="125%"
      inkscape:export-xdpi="90"
@@ -890,12 +890,12 @@
        sodipodi:role="line"
        id="tspan4926-4-5"
        x="619.03296"
-       y="204.91406">Ignore</tspan></text>
+       y="208.91406">Ignore</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
      x="610.91785"
-     y="240.50436"
+     y="242.50436"
      id="text4631-0-3"
      sodipodi:linespacing="125%"
      inkscape:export-xdpi="90"
@@ -903,7 +903,7 @@
        sodipodi:role="line"
        id="tspan4633-4-0"
        x="610.91785"
-       y="240.50436">42 min ago</tspan></text>
+       y="242.50436">42 min ago</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -936,21 +936,21 @@
      width="145.84077"
      height="15.026019"
      x="257.99414"
-     y="175.60857"
+     y="173.60857"
      rx="4.0286674"
      ry="3.8968201" />
   <text
      xml:space="preserve"
      style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
      x="261.92163"
-     y="186.68776"
+     y="184.68776"
      id="text4589-32-9"
      sodipodi:linespacing="125%"
      inkscape:export-xdpi="90"
      inkscape:export-ydpi="90"><tspan
        sodipodi:role="line"
        x="261.92163"
-       y="186.68776"
+       y="184.68776"
        id="tspan4593-90-3">Knock knock!</tspan></text>
   <text
      xml:space="preserve"
