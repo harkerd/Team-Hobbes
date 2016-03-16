@@ -1,0 +1,8 @@
+User Test Tasks
+
+1. Starting at the home page, change the sound of notifications for Gmail
+2. Disable reminders for Messenger.
+3. Change reminder time setting for John Smith from Messenger.
+4. Check reminders to see who you didn't reply to in Messenger.
+5. Given you get a notification from the reminder app for Messenger, check the reminder and reply to John Smith.
+6. Given you get a notification of multiple reminders, find which is the oldest message you didn't respond to in Messenger.
