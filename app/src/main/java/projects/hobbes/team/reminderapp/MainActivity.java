@@ -60,6 +60,19 @@ public class MainActivity extends AppCompatActivity {
                         .setSmallIcon(R.drawable.headelephantlight)
                         .setContentTitle("John Smith")
                         .setContentText("Knock knock!");
+
+        NotificationCompat.InboxStyle inboxStyle =
+                new NotificationCompat.InboxStyle();
+        String[] events = new String[6];
+// Sets a title for the Inbox in expanded layout
+        inboxStyle.setBigContentTitle("Event tracker details:");
+// Moves events into the expanded layout
+        for (int i=0; i < events.length; i++) {
+            events[i] = "test";
+            inboxStyle.addLine(events[i]);
+        }
+// Moves the expanded layout object into the notification object.
+        mBuilder.setStyle(inboxStyle);
 // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(this,AppRemindersActivity.class);
 
