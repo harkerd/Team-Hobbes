@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity
             inboxStyle.addLine(events[i]);
         }
 // Moves the expanded layout object into the notification object.
-        mBuilder.setStyle(inboxStyle);
+       // mBuilder.setStyle(inboxStyle);
 // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(this, MainActivity.class);
 
