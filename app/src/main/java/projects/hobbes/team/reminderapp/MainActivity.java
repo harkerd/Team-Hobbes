@@ -75,8 +75,11 @@ public class MainActivity extends AppCompatActivity
         List<Reminder> reminders = new ArrayList<>();
         Reminder reminder = new Reminder(new Contact(new ContactSettings(), "Bob Joe", "(555)555-5555"), "Messenger",
                 "What are you up to?", new Date(), 30, true);
-        Reminder reminder2 = new Reminder(new Contact(new ContactSettings(), "Raul Diego", "(555)555-5555"), "Messenger",
+        Reminder reminder2 = new Reminder(new Contact(new ContactSettings(), "John Smith", "(555)555-5555"), "Messenger",
+                "Knock knock!", new Date(), 40, true);
+        Reminder reminder3 = new Reminder(new Contact(new ContactSettings(), "Raul Diego", "(555)555-5555"), "Messenger",
                 "What's up dude?", new Date(), 10, false);
+        reminders.add(reminder3);
         reminders.add(reminder);
         reminders.add(reminder2);
         remindersModel.addApp("Messenger", reminders);
@@ -147,7 +150,7 @@ public class MainActivity extends AppCompatActivity
 // Moves the expanded layout object into the notification object.
         mBuilder.setStyle(inboxStyle);
 // Creates an explicit intent for an Activity in your app
-        Intent resultIntent = new Intent(this, AppRemindersActivity.class);
+        Intent resultIntent = new Intent(this, MainActivity.class);
 
 // The stack builder object will contain an artificial back stack for the
 // started Activity.
@@ -155,7 +158,7 @@ public class MainActivity extends AppCompatActivity
 // your application to the Home screen.
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
 // Adds the back stack for the Intent (but not the Intent itself)
-        stackBuilder.addParentStack(AppRemindersActivity.class);
+        stackBuilder.addParentStack(MainActivity.class);
 // Adds the Intent that starts the Activity to the top of the stack
         stackBuilder.addNextIntent(resultIntent);
         PendingIntent resultPendingIntent =
