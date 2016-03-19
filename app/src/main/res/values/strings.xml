@@ -6,4 +6,6 @@
     <string name="title_activity_contacts_list">ContactsListActivity</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="add_app">Add App</string>
+    <string name="NotificationTextName">John Snow</string>
+    <string name="NotificationTextContent">Knock knock!</string>
 </resources>
