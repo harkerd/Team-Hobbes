@@ -8,4 +8,18 @@
     <string name="add_app">Add App</string>
     <string name="NotificationTextName">John Snow</string>
     <string name="NotificationTextContent">Knock knock!</string>
+
+    <string-array name="sounds_array">
+        <item>None</item>
+        <item>Beep</item>
+        <item>BeepTwice</item>
+        <item>BeepLouder</item>
+    </string-array>
+
+    <string-array name="times_array">
+        <item>15 Min</item>
+        <item>30 Min</item>
+        <item>45 Min</item>
+        <item>1 hour</item>
+    </string-array>
 </resources>
