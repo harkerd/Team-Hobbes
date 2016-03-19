@@ -12,4 +12,10 @@ public class Settings {
     public Settings() {
 
     }
+
+    public Settings(String sound, String reminderTime, boolean isVibrateOn) {
+        this.sound = sound;
+        this.reminderTime = reminderTime;
+        this.isVibrateOn = isVibrateOn;
+    }
 }

@@ -28,7 +28,7 @@
                 android:value="projects.hobbes.team.reminderapp.MainActivity" />
         </activity>
         <activity
-            android:name=".AppSettings"
+            android:name=".AppSettingsActivity"
             android:label="@string/title_activity_app_settings"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

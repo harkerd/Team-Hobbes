@@ -22,4 +22,30 @@ public class Contact {
     {
         return name;
     }
+
+    public Contact(Settings settings, String name, String contactInfo) {
+        this.settings = settings;
+        this.name = name;
+        this.contactInfo = contactInfo;
+    }
+
+    public Settings getSettings() {
+        return settings;
+    }
+
+    public void setSettings(Settings settings) {
+        this.settings = settings;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getContactInfo() {
+        return contactInfo;
+    }
+
+    public void setContactInfo(String contactInfo) {
+        this.contactInfo = contactInfo;
+    }
 }

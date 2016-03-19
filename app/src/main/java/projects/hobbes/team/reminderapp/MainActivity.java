@@ -10,6 +10,8 @@ import android.os.Bundle;
 
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,14 +23,31 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import projects.hobbes.team.reminderapp.model.Puller;
 import projects.hobbes.team.reminderapp.model.Settings;
 
+import com.bignerdranch.expandablerecyclerview.Model.ParentListItem;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import projects.hobbes.team.reminderapp.expandableReminderList.MyExpandableAdapter;
+import projects.hobbes.team.reminderapp.expandableReminderList.MyParentObject;
+import projects.hobbes.team.reminderapp.model.Contact;
+import projects.hobbes.team.reminderapp.model.Puller;
+import projects.hobbes.team.reminderapp.model.Reminder;
+import projects.hobbes.team.reminderapp.model.RemindersModel;
+import projects.hobbes.team.reminderapp.model.Settings;
+
 public class MainActivity extends AppCompatActivity
 {
+
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
     private GoogleApiClient client;
+
+    RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -37,9 +56,40 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
+        recyclerView = (RecyclerView) findViewById(R.id.app_list);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        MyExpandableAdapter expandableAdapter = new MyExpandableAdapter(this, getMessages());
+        recyclerView.setAdapter(expandableAdapter);
+
+
+    }
+
+    private List<ParentListItem> getMessages() {
+
+        RemindersModel remindersModel = RemindersModel.getInstance();
+
+        // todo: RemindersModel will need to call to get actual messages for the apps
+        List<Reminder> reminders = new ArrayList<>();
+        Reminder reminder = new Reminder(new Contact(new Settings(), "Bob Joe", "(555)555-5555"), "Messenger",
+                "What are you up to?", new Date(), 30, true);
+        Reminder reminder2 = new Reminder(new Contact(new Settings(), "Raul Diego", "(555)555-5555"), "Messenger",
+                "What's up dude?", new Date(), 10, false);
+        reminders.add(reminder);
+        reminders.add(reminder2);
+        remindersModel.addApp("Messenger", reminders);
+
+        List<ParentListItem> parentListItems = new ArrayList<>();
+        MyParentObject parentObject = new MyParentObject("Messenger");
+        parentObject.setChildItemList(reminders);
+        parentListItems.add(parentObject);
+
+        return parentListItems;
     }
 
     @Override
