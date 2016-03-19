@@ -24,4 +24,60 @@
     <include layout="@layout/content_app_settings" />
 
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="80dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Reminders"
+                android:textSize="20dp"
+                android:textColor="@color/black"
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="20dp"
+                />
+            <Switch
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/defaultSettingsButton"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text="Default Settings"
+                android:background="@color/colorPrimary"
+                android:textSize="20dp"
+                android:layout_marginTop="70dp"
+                android:textColor="@color/white"
+                android:layout_centerInParent="true"
+                android:clickable="true"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/contactSettingsButton"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text="Contact Settings"
+                android:background="@color/colorPrimary"
+                android:textSize="20dp"
+                android:layout_marginTop="10dp"
+                android:textColor="@color/white"
+                android:layout_centerInParent="true"
+                android:clickable="true"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+
 </android.support.design.widget.CoordinatorLayout>

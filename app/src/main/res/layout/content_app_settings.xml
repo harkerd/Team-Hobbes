@@ -13,9 +13,6 @@
     tools:context="projects.hobbes.team.reminderapp.AppSettings"
     tools:showIn="@layout/activity_app_settings">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="app Settings"/>
+
 
 </LinearLayout>

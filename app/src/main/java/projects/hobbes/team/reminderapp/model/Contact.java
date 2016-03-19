@@ -4,7 +4,7 @@ import android.media.Image;
 
 public class Contact {
 
-    private Settings settings;
+    private ContactSettings contactSettings;
     private String name;
     private String contactInfo;
     private Image image;
@@ -23,18 +23,18 @@ public class Contact {
         return name;
     }
 
-    public Contact(Settings settings, String name, String contactInfo) {
-        this.settings = settings;
+    public Contact(ContactSettings contactSettings, String name, String contactInfo) {
+        this.contactSettings = contactSettings;
         this.name = name;
         this.contactInfo = contactInfo;
     }
 
-    public Settings getSettings() {
-        return settings;
+    public ContactSettings getContactSettings() {
+        return contactSettings;
     }
 
-    public void setSettings(Settings settings) {
-        this.settings = settings;
+    public void setContactSettings(ContactSettings contactSettings) {
+        this.contactSettings = contactSettings;
     }
 
     public void setName(String name) {

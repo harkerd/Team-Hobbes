@@ -20,8 +20,7 @@ import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 
-import projects.hobbes.team.reminderapp.model.Puller;
-import projects.hobbes.team.reminderapp.model.Settings;
+import projects.hobbes.team.reminderapp.model.ContactSettings;
 
 import com.bignerdranch.expandablerecyclerview.Model.ParentListItem;
 
@@ -32,10 +31,8 @@ import java.util.List;
 import projects.hobbes.team.reminderapp.expandableReminderList.MyExpandableAdapter;
 import projects.hobbes.team.reminderapp.expandableReminderList.MyParentObject;
 import projects.hobbes.team.reminderapp.model.Contact;
-import projects.hobbes.team.reminderapp.model.Puller;
 import projects.hobbes.team.reminderapp.model.Reminder;
 import projects.hobbes.team.reminderapp.model.RemindersModel;
-import projects.hobbes.team.reminderapp.model.Settings;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -76,9 +73,9 @@ public class MainActivity extends AppCompatActivity
 
         // todo: RemindersModel will need to call to get actual messages for the apps
         List<Reminder> reminders = new ArrayList<>();
-        Reminder reminder = new Reminder(new Contact(new Settings(), "Bob Joe", "(555)555-5555"), "Messenger",
+        Reminder reminder = new Reminder(new Contact(new ContactSettings(), "Bob Joe", "(555)555-5555"), "Messenger",
                 "What are you up to?", new Date(), 30, true);
-        Reminder reminder2 = new Reminder(new Contact(new Settings(), "Raul Diego", "(555)555-5555"), "Messenger",
+        Reminder reminder2 = new Reminder(new Contact(new ContactSettings(), "Raul Diego", "(555)555-5555"), "Messenger",
                 "What's up dude?", new Date(), 10, false);
         reminders.add(reminder);
         reminders.add(reminder2);
