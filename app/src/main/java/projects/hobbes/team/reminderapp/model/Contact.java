@@ -1,16 +1,25 @@
 package projects.hobbes.team.reminderapp.model;
 
-/**
- * Created by Cory on 3/15/2016.
- */
+import android.media.Image;
+
 public class Contact {
 
     private Settings settings;
     private String name;
     private String contactInfo;
-    //image?
+    private Image image;
 
-    public Contact() {
+    public Contact(String name) {
+        this.name = name;
+    }
 
+    public Image getImage()
+    {
+        return image;
+    }
+
+    public String getName()
+    {
+        return name;
     }
 }

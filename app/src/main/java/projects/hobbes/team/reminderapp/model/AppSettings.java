@@ -3,9 +3,6 @@ package projects.hobbes.team.reminderapp.model;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by Cory on 3/15/2016.
- */
 public class AppSettings {
 
     private boolean isTurnedOn = true;
