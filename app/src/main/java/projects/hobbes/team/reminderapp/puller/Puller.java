@@ -1,4 +1,4 @@
-package projects.hobbes.team.reminderapp.model;
+package projects.hobbes.team.reminderapp.puller;
 
 import android.util.Log;
 
