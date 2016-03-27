@@ -26,6 +26,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
     compile 'com.google.android.gms:play-services:8.4.0'
-    compile 'com.joanzapata.android:android-iconify:1.0.9'
+    compile 'com.joanzapata.iconify:android-iconify:2.1.1'
+    compile 'com.joanzapata.iconify:android-iconify-fontawesome:2.1.1'
     compile 'com.bignerdranch.android:expandablerecyclerview:2.0.3'
 }

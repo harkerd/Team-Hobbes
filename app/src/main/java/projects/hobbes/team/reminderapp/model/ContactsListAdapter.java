@@ -10,8 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.joanzapata.android.iconify.IconDrawable;
-import com.joanzapata.android.iconify.Iconify;
+import com.joanzapata.iconify.IconDrawable;
+import com.joanzapata.iconify.fonts.FontAwesomeIcons;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -84,7 +85,7 @@ public class ContactsListAdapter extends RecyclerView.Adapter<ContactsListAdapte
 
             if(contact.getImage() == null)
             {
-                Drawable icon = new IconDrawable(context, Iconify.IconValue.fa_user).color(Color.WHITE).sizeDp(60);
+                Drawable icon = new IconDrawable(context, FontAwesomeIcons.fa_user).color(Color.WHITE).sizeDp(60);
                 iconView.setImageDrawable(icon);
             }
             else
