@@ -7,7 +7,7 @@
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="add_app">Add App</string>
     <string name="NotificationTextName">John Snow</string>
-    <string name="NotificationTextContent">Knock knock!</string>
+    <string name="NotificationTextContent">Knock knock! Really long test string text to see what will happen in notification land.</string>
 
     <string-array name="sounds_array">
         <item>None</item>

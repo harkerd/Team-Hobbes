@@ -64,7 +64,8 @@ public class MainActivity extends AppCompatActivity
         MyExpandableAdapter expandableAdapter = new MyExpandableAdapter(this, getMessages());
         recyclerView.setAdapter(expandableAdapter);
 
-
+        Intent intent = new Intent(this, NotificationService.class);
+        startService(intent);
     }
 
     private List<ParentListItem> getMessages() {
@@ -124,7 +125,7 @@ public class MainActivity extends AppCompatActivity
     public void onPause()
     {
         super.onPause();
-        SendNotification();
+//        SendNotification();
     }
 
 
