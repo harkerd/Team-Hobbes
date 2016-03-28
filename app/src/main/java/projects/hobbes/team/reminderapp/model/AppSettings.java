@@ -4,11 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
+import projects.hobbes.team.reminderapp.puller.API;
+
 public class AppSettings {
 
     private boolean isTurnedOn = true;
     private ContactSettings defaultContactSettings;
     private Map<String, Contact> contactMap;
+    private API api;
     //private String pollingIntervals???
 
     public AppSettings() {
@@ -36,5 +39,9 @@ public class AppSettings {
 
     public void toggleIsTurnedOn() {
         isTurnedOn = !isTurnedOn;
+    }
+
+    public API getAPI() {
+        return api;
     }
 }
