@@ -45,7 +45,11 @@
                 />
             <Switch
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:thumbTint="@color/colorPrimary"
+                android:showText="true"
+                android:switchTextAppearance="@style/SwitchTextAppearance"
+                android:trackTint="#346BC1"/>
         </LinearLayout>
         <RelativeLayout
             android:layout_width="match_parent"

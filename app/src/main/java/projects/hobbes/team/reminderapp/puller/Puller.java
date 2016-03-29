@@ -1,38 +1,119 @@
 package projects.hobbes.team.reminderapp.puller;
 
 import android.util.Log;
+import java.util.List;
+import projects.hobbes.team.reminderapp.model.AppSettings;
+import projects.hobbes.team.reminderapp.model.Reminder;
+import projects.hobbes.team.reminderapp.model.RemindersModel;
+import projects.hobbes.team.reminderapp.model.SettingsModel;
 
 public class Puller
 {
     private static final String TAG = "PullerLog";
-    private static boolean running = false;
+    private static Thread puller;
 
     public static void start()
     {
-        if(running)
+        if(puller == null)
         {
-            Log.e(TAG, "Start called while Puller is already running");
+            puller = new PullerThread();
         }
-        else
-        {
-            running = !running;
-        }
+        puller.start();
+        Log.d(TAG, "Passed run");
     }
 
     public static void stop()
     {
-        if(!running)
+        puller.interrupt();
+    }
+
+    public static void refresh()
+    {
+        synchronized (puller)
         {
-            Log.e(TAG, "Stop called while Puller is not running");
-        }
-        else
-        {
-            running = !running;
+            puller.notify();
         }
     }
 
-    private static void run()
+    private static class PullerThread extends Thread
     {
-        //TODO: implement Puller run()
+        private static final int SECOND = 1000;
+        private static final int QUARTER_MINUTE = 15 * SECOND;
+        private static final int HALF_MINUTE = 30 * SECOND;
+        private static final int MINUTE = 60 * SECOND;
+        private static final int QUARTER_HOUR = 15 * MINUTE;
+        private static final int HALF_HOUR = 30 * MINUTE;
+        private static final int HOUR = 60 * MINUTE;
+
+        private int waitTime = QUARTER_MINUTE;
+        private boolean running = true;
+
+        @Override
+        public void run()
+        {
+            while(running)
+            {
+                try
+                {
+                    synchronized(this) {
+                        wait(waitTime);
+                    }
+                }
+                catch (InterruptedException e)
+                {
+                    running = false;
+                }
+
+                updateReminders();
+                Log.d(TAG, "update");
+            }
+        }
+
+        private void updateReminders()
+        {
+            //*
+            for(String appName : SettingsModel.getInstance().getAppNames())
+            {
+                AppSettings app = SettingsModel.getInstance().getAppSettings(appName);
+                if(app.isTurnedOn())
+                {
+                    API api = app.getAPI();
+                    List<Reminder> pending = RemindersModel.getInstance().getRemindersList(appName);
+                    List<Reminder> messages = api.getMessages();
+                    //TODO: Not sure how to figure out if it is already pending... Or even if that is my responsibility
+
+                    pending.addAll(messages);
+                    for(Reminder reminder : pending)
+                    {
+                        if(reminder.isOverdue())
+                        {
+                            //TODO: ping notifications
+                        }
+                    }
+                }
+            }
+            //*/
+        }
     }
+
+    /*private static class PullerService extends Service
+    {
+        private IBinder mBinder;
+
+        @Override
+        public void onCreate() {
+            // The service is being created
+        }
+
+        @Override
+        public IBinder onBind(Intent intent) {
+            // A client is binding to the service with bindService()
+            return mBinder;
+        }
+
+        @Override
+        public void onDestroy() {
+            // The service is no longer used and is being destroyed
+        }
+    }*/
 }

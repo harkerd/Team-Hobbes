@@ -26,4 +26,8 @@ public class SettingsModel {
     public AppSettings getAppSettings(String appName) {
         return appSettingsMap.get(appName);
     }
+
+    public String[] getAppNames() {
+        return (String[]) appSettingsMap.keySet().toArray();
+    }
 }
