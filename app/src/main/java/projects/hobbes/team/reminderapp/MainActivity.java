@@ -40,6 +40,7 @@ import projects.hobbes.team.reminderapp.expandableReminderList.MyParentObject;
 import projects.hobbes.team.reminderapp.model.Contact;
 import projects.hobbes.team.reminderapp.model.Reminder;
 import projects.hobbes.team.reminderapp.model.RemindersModel;
+import projects.hobbes.team.reminderapp.puller.Puller;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -73,7 +74,7 @@ public class MainActivity extends AppCompatActivity
         MyExpandableAdapter expandableAdapter = new MyExpandableAdapter(this, getMessages());
         recyclerView.setAdapter(expandableAdapter);
 
-
+        Puller.start();
     }
 
     private List<ParentListItem> getMessages() {
