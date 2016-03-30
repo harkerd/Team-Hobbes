@@ -78,9 +78,14 @@ public class Puller
                 if(app.isTurnedOn())
                 {
                     API api = app.getAPI();
+                    //TODO: update contacts list???
+
+
                     List<Reminder> pending = RemindersModel.getInstance().getRemindersList(appName);
                     List<Reminder> messages = api.getMessages();
-                    //TODO: Not sure how to figure out if it is already pending... Or even if that is my responsibility
+                    //TODO: update pending reminders list
+                    //Not sure how to figure out if a message is already pending
+
 
                     pending.addAll(messages);
                     for(Reminder reminder : pending)
