@@ -28,6 +28,8 @@ public class SettingsModel {
         return appSettingsMap.get(appName);
     }
 
+
+
     public String[] getAppNames() {
         return (String[]) appSettingsMap.keySet().toArray();
     }

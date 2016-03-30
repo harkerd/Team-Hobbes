@@ -23,6 +23,11 @@ public class AppSettings {
         return defaultContactSettings;
     }
 
+    public void setContacts(Map<String, Contact> contactMap)
+    {
+        this.contactMap = contactMap;
+    }
+
     public Map<String, Contact> getContactMap() {
         return contactMap;
     }

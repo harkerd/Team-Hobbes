@@ -32,6 +32,14 @@ public class Reminder {
         this.timeSinceReceived = timeSinceReceived;
     }
 
+    public void updateData(Contact contact, Date remindTime) {
+        this.contact = contact;
+        if(remindTime != null)
+        {
+            this.remindTime = remindTime;
+        }
+    }
+
     public Contact getContact() {
         return contact;
     }
@@ -54,6 +62,10 @@ public class Reminder {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getContactName() {
+        return contactName;
     }
 
     public Date getTimeReceived() {
@@ -84,10 +96,18 @@ public class Reminder {
         this.isOverdue = isOverdue;
     }
 
-    public boolean equals(Reminder r) {
-         return r.getApp() == this.getApp() &&
-            r.getMessage() == this.getMessage() &&
-            r.getContact().getName() == this.getContact().getName() &&
-            r.timeReceived.equals(this.timeReceived);
+    public boolean equals(Object o) {
+        if(o == null || !(o instanceof Reminder))
+        {
+            return false;
+        }
+        else
+        {
+            Reminder r = (Reminder) o;
+            return r.app == this.app &&
+                    r.message == this.message &&
+                    r.contactName == this.contactName &&
+                    r.timeReceived.equals(this.timeReceived);
+        }
     }
 }
