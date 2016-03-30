@@ -3,6 +3,7 @@ package projects.hobbes.team.reminderapp.puller;
 import android.util.Log;
 import java.util.List;
 import projects.hobbes.team.reminderapp.model.AppSettings;
+import projects.hobbes.team.reminderapp.model.Contact;
 import projects.hobbes.team.reminderapp.model.Reminder;
 import projects.hobbes.team.reminderapp.model.RemindersModel;
 import projects.hobbes.team.reminderapp.model.SettingsModel;
@@ -121,4 +122,23 @@ public class Puller
             // The service is no longer used and is being destroyed
         }
     }*/
+
+
+
+
+    public static void populateFakeData()
+    {
+        SettingsModel.getInstance().addApp("Messenger", new AppSettings());
+
+        SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("John Doe", new Contact("John Doe"));
+        SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("John Smith", new Contact("John Smith"));
+        SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("Jane Doe", new Contact("Jane Doe"));
+        SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("Bosco", new Contact("Bosco"));
+        SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("James Bond", new Contact("James Bond"));
+        SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("Zoolander", new Contact("Zoolander"));
+
+
+
+
+    }
 }

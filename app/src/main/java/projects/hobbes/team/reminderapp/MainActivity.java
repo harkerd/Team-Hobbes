@@ -75,6 +75,8 @@ public class MainActivity extends AppCompatActivity
         recyclerView.setAdapter(expandableAdapter);
 
         Puller.start();
+
+        Puller.populateFakeData();
     }
 
     private List<ParentListItem> getMessages() {
