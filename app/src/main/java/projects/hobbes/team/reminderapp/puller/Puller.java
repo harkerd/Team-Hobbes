@@ -2,6 +2,8 @@ package projects.hobbes.team.reminderapp.puller;
 
 import android.util.Log;
 import java.util.List;
+import java.util.Map;
+
 import projects.hobbes.team.reminderapp.model.AppSettings;
 import projects.hobbes.team.reminderapp.model.Contact;
 import projects.hobbes.team.reminderapp.model.Reminder;
@@ -79,7 +81,14 @@ public class Puller
                 if(app.isTurnedOn())
                 {
                     API api = app.getAPI();
-                    //TODO: update contacts list???
+
+                    Map<String, Contact> contactsInModel = SettingsModel.getInstance().getAppSettings(appName).getContactMap();
+                    List<Contact> contacts = api.getContacts();
+                    for(Contact person : contacts) {
+                        if(!contactsInModel.containsKey(person.getName())) {
+                            contactsInModel.put(person.getName(), person);
+                        }
+                    }
 
 
                     List<Reminder> pending = RemindersModel.getInstance().getRemindersList(appName);
@@ -87,8 +96,6 @@ public class Puller
                     //TODO: update pending reminders list
                     //Not sure how to figure out if a message is already pending
 
-
-                    pending.addAll(messages);
                     for(Reminder reminder : pending)
                     {
                         if(reminder.isOverdue())
@@ -96,6 +103,7 @@ public class Puller
                             //TODO: ping notifications
                         }
                     }
+                    pending.addAll(messages);
                 }
             }
             //*/
@@ -136,9 +144,5 @@ public class Puller
         SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("Bosco", new Contact("Bosco"));
         SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("James Bond", new Contact("James Bond"));
         SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("Zoolander", new Contact("Zoolander"));
-
-
-
-
     }
 }
