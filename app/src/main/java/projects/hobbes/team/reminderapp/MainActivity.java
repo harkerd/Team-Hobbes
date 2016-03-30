@@ -75,8 +75,13 @@ public class MainActivity extends AppCompatActivity
         recyclerView.setAdapter(expandableAdapter);
 
         Puller.start();
+        Puller.populateFakeData();
+
 //        Intent intent = new Intent(this, NotificationService.class);
 //        startService(intent);
+
+
+
     }
 
     private List<ParentListItem> getMessages() {
@@ -85,15 +90,15 @@ public class MainActivity extends AppCompatActivity
 
         // todo: RemindersModel will need to call to get actual messages for the apps
         List<Reminder> reminders = new ArrayList<>();
-        Reminder reminder = new Reminder(new Contact(new ContactSettings(), "Bob Joe", "(555)555-5555"), "Messenger",
-                "What are you up to?", new Date(), 30, true);
-        Reminder reminder2 = new Reminder(new Contact(new ContactSettings(), "John Smith", "(555)555-5555"), "Messenger",
-                "Knock knock!", new Date(), 40, true);
-        Reminder reminder3 = new Reminder(new Contact(new ContactSettings(), "Raul Diego", "(555)555-5555"), "Messenger",
-                "What's up dude?", new Date(), 10, false);
-        reminders.add(reminder3);
-        reminders.add(reminder);
-        reminders.add(reminder2);
+//        Reminder reminder = new Reminder(new Contact(new ContactSettings(), "Bob Joe", "(555)555-5555").getName(), "Messenger",
+//                "What are you up to?", new Date(), 30, true);
+//        Reminder reminder2 = new Reminder(new Contact(new ContactSettings(), "John Smith", "(555)555-5555"), "Messenger",
+//                "Knock knock!", new Date(), 40, true);
+//        Reminder reminder3 = new Reminder(new Contact(new ContactSettings(), "Raul Diego", "(555)555-5555"), "Messenger",
+//                "What's up dude?", new Date(), 10, false);
+//        reminders.add(reminder3);
+//        reminders.add(reminder);
+//        reminders.add(reminder2);
         remindersModel.addApp("Messenger", reminders);
 
         List<ParentListItem> parentListItems = new ArrayList<>();
@@ -141,8 +146,9 @@ public class MainActivity extends AppCompatActivity
     public void onPause()
     {
         super.onPause();
-        Reminder r = new Reminder();
-        Notification.SendNotification(this, r);
+        Reminder r = new Reminder("Test Name", "Messenger", "Text of long message", new Date(System.currentTimeMillis()), 7);
+        Notification n = new Notification();
+        n.SendNotification(this, r);
     }
 
 

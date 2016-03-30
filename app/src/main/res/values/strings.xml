@@ -3,8 +3,8 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_app_reminders">AppRemindersActivity</string>
     <string name="title_activity_app_settings">AppSettings</string>
-    <string name="title_activity_contacts_list">ContactsListActivity</string>
-    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="title_activity_contacts_list">Contacts</string>
+    <string name="title_activity_settings">Default Settings</string>
     <string name="add_app">Add App</string>
     <string name="NotificationTextName">John Snow</string>
     <string name="NotificationTextContent">Knock knock! Really long test string text to see what will happen in notification land.</string>

@@ -7,24 +7,29 @@ import java.util.Date;
  */
 public class Reminder {
 
-    private Contact contact;
+    //From API
+    private String contactName;
     private String app;
     private String message;
     private Date timeReceived;
     private int timeSinceReceived;
+
+    //From Puller
+    private Contact contact;
     private boolean isOverdue;
+    private Date remindTime;
+    private boolean ignore;
 
     public Reminder() {
 
     }
 
-    public Reminder(Contact contact, String app, String message, Date timeReceived, int timeSinceReceived, boolean isOverdue) {
-        this.contact = contact;
+    public Reminder(String contactName, String app, String message, Date timeReceived, int timeSinceReceived) {
+        this.contactName = contactName;
         this.app = app;
         this.message = message;
         this.timeReceived = timeReceived;
         this.timeSinceReceived = timeSinceReceived;
-        this.isOverdue = isOverdue;
     }
 
     public Contact getContact() {
@@ -71,7 +76,18 @@ public class Reminder {
         return isOverdue;
     }
 
+    public boolean isIgnored() {
+        return ignore;
+    }
+
     public void setIsOverdue(boolean isOverdue) {
         this.isOverdue = isOverdue;
+    }
+
+    public boolean equals(Reminder r) {
+         return r.getApp() == this.getApp() &&
+            r.getMessage() == this.getMessage() &&
+            r.getContact().getName() == this.getContact().getName() &&
+            r.timeReceived.equals(this.timeReceived);
     }
 }

@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.util.Log;
 import java.util.List;
 
-import projects.hobbes.team.reminderapp.NotificationService;
+import java.util.Map;
+
 import projects.hobbes.team.reminderapp.model.AppSettings;
+import projects.hobbes.team.reminderapp.model.Contact;
 import projects.hobbes.team.reminderapp.model.Reminder;
 import projects.hobbes.team.reminderapp.model.RemindersModel;
 import projects.hobbes.team.reminderapp.model.SettingsModel;
@@ -84,11 +86,21 @@ public class Puller
                 if(app.isTurnedOn())
                 {
                     API api = app.getAPI();
+
+                    Map<String, Contact> contactsInModel = SettingsModel.getInstance().getAppSettings(appName).getContactMap();
+                    List<Contact> contacts = api.getContacts();
+                    for(Contact person : contacts) {
+                        if(!contactsInModel.containsKey(person.getName())) {
+                            contactsInModel.put(person.getName(), person);
+                        }
+                    }
+
+
                     List<Reminder> pending = RemindersModel.getInstance().getRemindersList(appName);
                     List<Reminder> messages = api.getMessages();
-                    //TODO: Not sure how to figure out if it is already pending... Or even if that is my responsibility
+                    //TODO: update pending reminders list
+                    //Not sure how to figure out if a message is already pending
 
-                    pending.addAll(messages);
                     for(Reminder reminder : pending)
                     {
                         if(reminder.isOverdue())
@@ -96,6 +108,7 @@ public class Puller
                             //TODO: ping notifications
                         }
                     }
+                    pending.addAll(messages);
                 }
             }
             //*/
@@ -122,4 +135,19 @@ public class Puller
             // The service is no longer used and is being destroyed
         }
     }*/
+
+
+
+
+    public static void populateFakeData()
+    {
+        SettingsModel.getInstance().addApp("Messenger", new AppSettings());
+
+        SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("John Doe", new Contact("John Doe"));
+        SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("John Smith", new Contact("John Smith"));
+        SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("Jane Doe", new Contact("Jane Doe"));
+        SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("Bosco", new Contact("Bosco"));
+        SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("James Bond", new Contact("James Bond"));
+        SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("Zoolander", new Contact("Zoolander"));
+    }
 }

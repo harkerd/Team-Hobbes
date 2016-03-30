@@ -16,7 +16,7 @@ import projects.hobbes.team.reminderapp.model.Reminder;
 public class Notification {
 
 
-    public static void SendNotification(Context context, Reminder reminder)
+    public void SendNotification(Context context, Reminder reminder)
     {
 //        NotificationCompat.Builder mBuilder =
 //                new NotificationCompat.Builder(context)
@@ -24,7 +24,10 @@ public class Notification {
 //                        .setContentTitle("John Smith")
 //                        .setContentText("Knock knock!");
         RemoteViews rv = new RemoteViews("projects.hobbes.team.reminderapp", R.layout.notification_simple);
-        rv.setString(R.id.Name, "setText", "TestName");
+//        rv.setString(R.id.Name, "setText", "TestName");
+        rv.setTextViewText(R.id.Name, reminder.getContact().getName());
+        rv.setTextViewText(R.id.Content, reminder.getMessage());
+
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
                         .setSmallIcon(R.drawable.headelephantlight)

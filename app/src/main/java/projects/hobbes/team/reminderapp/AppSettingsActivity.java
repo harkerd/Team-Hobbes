@@ -9,15 +9,19 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 
 import projects.hobbes.team.reminderapp.model.AppSettings;
 import projects.hobbes.team.reminderapp.model.SettingsModel;
 
 public class AppSettingsActivity extends AppCompatActivity {
 
+    public String appName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        appName = "Messenger";
         Log.d("tag", "1");
         super.onCreate(savedInstanceState);
         Log.d("tag", "2");
@@ -28,9 +32,23 @@ public class AppSettingsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         Log.d("tag", "5");
 
-        if(SettingsModel.getInstance().getAppSettings("Messenger") == null)
+        setTitle(appName + " Settings");
+
+        Switch appsOnOrOffToggle = (Switch) findViewById(R.id.appRemindersToggle);
+        appsOnOrOffToggle.setChecked(SettingsModel.getInstance().getAppSettings(appName).isTurnedOn());
+        appsOnOrOffToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
         {
-            SettingsModel.getInstance().addApp("Messenger", new AppSettings());
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                SettingsModel.getInstance().getAppSettings(appName).toggleIsTurnedOn();
+            }
+        });
+
+
+        if(SettingsModel.getInstance().getAppSettings(appName) == null)
+        {
+            SettingsModel.getInstance().addApp(appName, new AppSettings());
         }
 
         Button contactButton = (Button) findViewById(R.id.contactSettingsButton);
@@ -52,7 +70,7 @@ public class AppSettingsActivity extends AppCompatActivity {
             public void onClick(View v)
             {
                 Intent intent = new Intent(v.getContext(), ContactsListActivity.class);
-                intent.putExtra("AppName", "Messenger");
+                intent.putExtra("AppName", appName);
                 startActivity(intent);
 
             }
