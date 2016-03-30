@@ -75,6 +75,8 @@ public class MainActivity extends AppCompatActivity
         recyclerView.setAdapter(expandableAdapter);
 
         Puller.start();
+//        Intent intent = new Intent(this, NotificationService.class);
+//        startService(intent);
     }
 
     private List<ParentListItem> getMessages() {
@@ -139,7 +141,8 @@ public class MainActivity extends AppCompatActivity
     public void onPause()
     {
         super.onPause();
-//        SendNotification();
+        Reminder r = new Reminder();
+        Notification.SendNotification(this, r);
     }
 
 

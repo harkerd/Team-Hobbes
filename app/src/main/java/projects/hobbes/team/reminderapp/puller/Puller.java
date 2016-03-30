@@ -1,7 +1,11 @@
 package projects.hobbes.team.reminderapp.puller;
 
+import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import java.util.List;
+
+import projects.hobbes.team.reminderapp.NotificationService;
 import projects.hobbes.team.reminderapp.model.AppSettings;
 import projects.hobbes.team.reminderapp.model.Reminder;
 import projects.hobbes.team.reminderapp.model.RemindersModel;
@@ -19,6 +23,8 @@ public class Puller
             puller = new PullerThread();
         }
         puller.start();
+
+
         Log.d(TAG, "Passed run");
     }
 
