@@ -3,6 +3,10 @@ package projects.hobbes.team.reminderapp.puller;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import java.util.Map;
@@ -24,10 +28,8 @@ public class Puller
         {
             puller = new PullerThread();
         }
+        populateFakeData();
         puller.start();
-
-
-        Log.d(TAG, "Passed run");
     }
 
     public static void stop()
@@ -56,6 +58,19 @@ public class Puller
         private int waitTime = QUARTER_MINUTE;
         private boolean running = true;
 
+        private int stringToMilSeconds(String time) {
+            int milSeconds = 0;
+
+            switch (time) {
+                case "15 Min": milSeconds = QUARTER_HOUR; break;
+                case "30 Min": milSeconds = HALF_HOUR; break;
+                case "45 Min": milSeconds = QUARTER_HOUR + HALF_HOUR; break;
+                case "1 hour": milSeconds = HOUR; break;
+            }
+
+            return milSeconds;
+        }
+
         @Override
         public void run()
         {
@@ -79,7 +94,7 @@ public class Puller
 
         private void updateReminders()
         {
-            //*
+            /*
             for(String appName : SettingsModel.getInstance().getAppNames())
             {
                 AppSettings app = SettingsModel.getInstance().getAppSettings(appName);
@@ -87,28 +102,53 @@ public class Puller
                 {
                     API api = app.getAPI();
 
-                    Map<String, Contact> contactsInModel = SettingsModel.getInstance().getAppSettings(appName).getContactMap();
+                    Map<String, Contact> contactsForModel = new HashMap<>();
                     List<Contact> contacts = api.getContacts();
                     for(Contact person : contacts) {
-                        if(!contactsInModel.containsKey(person.getName())) {
-                            contactsInModel.put(person.getName(), person);
-                        }
+                        contactsForModel.put(person.getName(), person);
                     }
+                    SettingsModel.getInstance().getAppSettings(appName).setContacts(contactsForModel);
 
 
                     List<Reminder> pending = RemindersModel.getInstance().getRemindersList(appName);
                     List<Reminder> messages = api.getMessages();
-                    //TODO: update pending reminders list
-                    //Not sure how to figure out if a message is already pending
 
+                    List<Reminder> messagesToAdd = new ArrayList<>();
+                    for(Reminder message : messages)
+                    {
+                        int index = pending.indexOf(message);
+                        if(index != -1)
+                        {
+                            message = pending.get(index);
+                            String contactName = message.getContactName();
+                            Contact contact = contactsForModel.get(contactName);
+                            message.updateData(contact, null);
+                        }
+                        else
+                        {
+                            String contactName = message.getContactName();
+                            Contact contact = contactsForModel.get(contactName);
+                            String reminderTime = contact.getContactSettings().getReminderTime();
+
+                            Date remindTime = new Date(message.getTimeReceived().getTime() + stringToMilSeconds(reminderTime));
+
+                            message.updateData(contact, remindTime);
+                            messagesToAdd.add(message);
+                        }
+                    }
+
+                    pending.addAll(messagesToAdd);
                     for(Reminder reminder : pending)
                     {
                         if(reminder.isOverdue())
                         {
                             //TODO: ping notifications
+                            //TODO: ping the MainActivity
                         }
                     }
-                    pending.addAll(messages);
+
+                    //replace list
+
                 }
             }
             //*/

@@ -11,6 +11,20 @@ public class Contact {
 
     public Contact(String name) {
         this.name = name;
+        contactSettings = new ContactSettings();
+    }
+
+    public Contact(String name, String contactInfo, Image image) {
+        this.name = name;
+        this.contactInfo = contactInfo;
+        this.image = image;
+        contactSettings = new ContactSettings();
+    }
+
+    public Contact(ContactSettings contactSettings, String name, String contactInfo) {
+        this.contactSettings = contactSettings;
+        this.name = name;
+        this.contactInfo = contactInfo;
     }
 
     public Image getImage()
@@ -21,12 +35,6 @@ public class Contact {
     public String getName()
     {
         return name;
-    }
-
-    public Contact(ContactSettings contactSettings, String name, String contactInfo) {
-        this.contactSettings = contactSettings;
-        this.name = name;
-        this.contactInfo = contactInfo;
     }
 
     public ContactSettings getContactSettings() {
