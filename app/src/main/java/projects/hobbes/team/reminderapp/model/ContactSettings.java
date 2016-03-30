@@ -11,6 +11,9 @@ public class ContactSettings
     private boolean isVibrateOn;
 
     public ContactSettings() {
+        sound = "None";
+        reminderTime = "15 Min";
+        isVibrateOn = true;
 
     }
 
@@ -18,5 +21,37 @@ public class ContactSettings
         this.sound = sound;
         this.reminderTime = reminderTime;
         this.isVibrateOn = isVibrateOn;
+    }
+
+    public boolean getIsVibrateOn()
+    {
+        return this.isVibrateOn;
+    }
+
+    public void toggleVibrate()
+    {
+        this.isVibrateOn = !this.isVibrateOn;
+
+    }
+
+
+    public String getSound()
+    {
+        return sound;
+    }
+
+    public void setSound(String sound)
+    {
+        this.sound = sound;
+    }
+
+    public String getReminderTime()
+    {
+        return reminderTime;
+    }
+
+    public void setReminderTime(String reminderTime)
+    {
+        this.reminderTime = reminderTime;
     }
 }

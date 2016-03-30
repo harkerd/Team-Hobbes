@@ -17,12 +17,6 @@ public class AppSettings {
     public AppSettings() {
         defaultContactSettings = new ContactSettings();
         contactMap = new TreeMap<>();
-        contactMap.put("John Doe", new Contact("John Doe"));
-        contactMap.put("John Smith", new Contact("John Smith"));
-        contactMap.put("Jane Doe", new Contact("Jane Doe"));
-        contactMap.put("Bosco", new Contact("Bosco"));
-        contactMap.put("James Bond", new Contact("James Bond"));
-        contactMap.put("Zoolander", new Contact("Zoolander"));
     }
 
     public ContactSettings getDefaultContactSettings() {
@@ -43,5 +37,10 @@ public class AppSettings {
 
     public API getAPI() {
         return api;
+    }
+
+    public ContactSettings getSpecificContactSettings (String contactKey)
+    {
+        return contactMap.get(contactKey).getContactSettings();
     }
 }

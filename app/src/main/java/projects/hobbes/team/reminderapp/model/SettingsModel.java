@@ -10,6 +10,7 @@ public class SettingsModel {
 
     private SettingsModel() {
         appSettingsMap = new HashMap<>();
+        appSettingsMap.put("Messenger", new AppSettings());
     }
 
     public static SettingsModel getInstance() {
