@@ -1,12 +1,8 @@
 package projects.hobbes.team.reminderapp.puller;
 
 import android.util.Log;
-
 import java.util.List;
-
 import projects.hobbes.team.reminderapp.model.AppSettings;
-import projects.hobbes.team.reminderapp.model.Contact;
-import projects.hobbes.team.reminderapp.model.ContactSettings;
 import projects.hobbes.team.reminderapp.model.Reminder;
 import projects.hobbes.team.reminderapp.model.RemindersModel;
 import projects.hobbes.team.reminderapp.model.SettingsModel;
@@ -42,14 +38,14 @@ public class Puller
     private static class PullerThread extends Thread
     {
         private static final int SECOND = 1000;
-        private static final int TEN_SECONDS = 10 * SECOND;
+        private static final int QUARTER_MINUTE = 15 * SECOND;
         private static final int HALF_MINUTE = 30 * SECOND;
         private static final int MINUTE = 60 * SECOND;
-        private static final int TEN_MINUTES = 10 * MINUTE;
+        private static final int QUARTER_HOUR = 15 * MINUTE;
         private static final int HALF_HOUR = 30 * MINUTE;
         private static final int HOUR = 60 * MINUTE;
 
-        private int waitTime = HALF_MINUTE;
+        private int waitTime = QUARTER_MINUTE;
         private boolean running = true;
 
         @Override
@@ -73,36 +69,56 @@ public class Puller
             }
         }
 
-        private void updateReminders() {
-            for(String appName : SettingsModel.getInstance().getAppNames()) {
+        private void updateReminders()
+        {
+            //*
+            for(String appName : SettingsModel.getInstance().getAppNames())
+            {
                 AppSettings app = SettingsModel.getInstance().getAppSettings(appName);
-                if(app.isTurnedOn()) {
+                if(app.isTurnedOn())
+                {
                     API api = app.getAPI();
+                    //TODO: update contacts list???
+
+
                     List<Reminder> pending = RemindersModel.getInstance().getRemindersList(appName);
                     List<Reminder> messages = api.getMessages();
-                    //not sure how to figure out if it is already pending...
+                    //TODO: update pending reminders list
+                    //Not sure how to figure out if a message is already pending
+
 
                     pending.addAll(messages);
+                    for(Reminder reminder : pending)
+                    {
+                        if(reminder.isOverdue())
+                        {
+                            //TODO: ping notifications
+                        }
+                    }
                 }
             }
+            //*/
         }
     }
 
-    public static void populateFakeData()
+    /*private static class PullerService extends Service
     {
-        SettingsModel.getInstance().addApp("Messenger", new AppSettings());
+        private IBinder mBinder;
 
-        SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("John Doe", new Contact("John Doe"));
-        SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("John Smith", new Contact("John Smith"));
-        SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("Jane Doe", new Contact("Jane Doe"));
-        SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("Bosco", new Contact("Bosco"));
-        SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("James Bond", new Contact("James Bond"));
-        SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("Zoolander", new Contact("Zoolander"));
+        @Override
+        public void onCreate() {
+            // The service is being created
+        }
 
+        @Override
+        public IBinder onBind(Intent intent) {
+            // A client is binding to the service with bindService()
+            return mBinder;
+        }
 
-
-
-    }
-
-
+        @Override
+        public void onDestroy() {
+            // The service is no longer used and is being destroyed
+        }
+    }*/
 }

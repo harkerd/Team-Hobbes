@@ -74,8 +74,7 @@ public class MainActivity extends AppCompatActivity
         MyExpandableAdapter expandableAdapter = new MyExpandableAdapter(this, getMessages());
         recyclerView.setAdapter(expandableAdapter);
 
-        Puller.populateFakeData();
-
+        Puller.start();
     }
 
     private List<ParentListItem> getMessages() {
