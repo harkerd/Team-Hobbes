@@ -31,7 +31,7 @@ public class Message
         return body;
     }
 
-    public boolean getRead()
+    public boolean isRead()
     {
         return read;
     }
