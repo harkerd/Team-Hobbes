@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -23,6 +24,7 @@ import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import projects.hobbes.team.reminderapp.expandableReminderList.AddAppObject;
 import projects.hobbes.team.reminderapp.model.ContactSettings;
 
 import com.bignerdranch.expandablerecyclerview.Model.ParentListItem;
@@ -45,6 +47,7 @@ import projects.hobbes.team.reminderapp.puller.Puller;
 public class MainActivity extends AppCompatActivity
 {
 
+    private static final String TAG = "MainActivity";
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -52,7 +55,9 @@ public class MainActivity extends AppCompatActivity
      */
     private GoogleApiClient client;
     Drawable settingsIcon;
-    RecyclerView recyclerView;
+    static RecyclerView recyclerView;
+    static MyExpandableAdapter expandableAdapter;
+    static Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -61,6 +66,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        context = this;
 
         Iconify.with(new FontAwesomeModule());
 
@@ -68,40 +74,51 @@ public class MainActivity extends AppCompatActivity
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
+        Puller.populateFakeData();
+        Puller.start();
+        Puller.refresh();
+
         recyclerView = (RecyclerView) findViewById(R.id.app_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        MyExpandableAdapter expandableAdapter = new MyExpandableAdapter(this, getMessages());
+        expandableAdapter = new MyExpandableAdapter(this, getMessages());
         recyclerView.setAdapter(expandableAdapter);
 
-        Puller.start();
 
-        Puller.populateFakeData();
     }
 
     private List<ParentListItem> getMessages() {
 
         RemindersModel remindersModel = RemindersModel.getInstance();
 
-        // todo: RemindersModel will need to call to get actual messages for the apps
-        List<Reminder> reminders = new ArrayList<>();
-        Reminder reminder = new Reminder(new Contact(new ContactSettings(), "Bob Joe", "(555)555-5555"), "Messenger",
-                "What are you up to?", new Date(), 30, true);
-        Reminder reminder2 = new Reminder(new Contact(new ContactSettings(), "John Smith", "(555)555-5555"), "Messenger",
-                "Knock knock!", new Date(), 40, true);
-        Reminder reminder3 = new Reminder(new Contact(new ContactSettings(), "Raul Diego", "(555)555-5555"), "Messenger",
-                "What's up dude?", new Date(), 10, false);
-        reminders.add(reminder3);
-        reminders.add(reminder);
-        reminders.add(reminder2);
-        remindersModel.addApp("Messenger", reminders);
-
         List<ParentListItem> parentListItems = new ArrayList<>();
         MyParentObject parentObject = new MyParentObject("Messenger");
-        parentObject.setChildItemList(reminders);
+        parentObject.setChildItemList(remindersModel.getRemindersList("Messenger"));
         parentListItems.add(parentObject);
 
+        parentListItems.add(new AddAppObject());
+
         return parentListItems;
+    }
+
+    public static void refreshList() {
+        if (context == null || !((MainActivity)context).hasWindowFocus()) {
+            return;
+        }
+        if (recyclerView != null && expandableAdapter != null) {
+//todo make it so that buttons aren't spuriosly acting up when this updates them
+            ((MainActivity)context).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    int size = RemindersModel.getInstance().getRemindersList("Messenger").size();
+                    Log.d(TAG, "notifying data set changed. size: " + size);
+                    expandableAdapter.notifyDataSetChanged();
+                    //todo: this doesn't need to be fixed for our testing, but still
+                    //todo-cont: figure out how to make new things appear and old things not disappear if
+                    //todo-cont: an app is expanded and a new reminder comes in
+                }
+            });
+        }
     }
 
     @Override

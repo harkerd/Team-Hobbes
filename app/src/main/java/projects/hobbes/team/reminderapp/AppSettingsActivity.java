@@ -14,6 +14,7 @@ import android.widget.Switch;
 
 import projects.hobbes.team.reminderapp.model.AppSettings;
 import projects.hobbes.team.reminderapp.model.SettingsModel;
+import projects.hobbes.team.reminderapp.puller.FakeMessenger;
 
 public class AppSettingsActivity extends AppCompatActivity {
 
@@ -36,11 +37,9 @@ public class AppSettingsActivity extends AppCompatActivity {
 
         Switch appsOnOrOffToggle = (Switch) findViewById(R.id.appRemindersToggle);
         appsOnOrOffToggle.setChecked(SettingsModel.getInstance().getAppSettings(appName).isTurnedOn());
-        appsOnOrOffToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
-        {
+        appsOnOrOffToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 SettingsModel.getInstance().getAppSettings(appName).toggleIsTurnedOn();
             }
         });
@@ -48,7 +47,7 @@ public class AppSettingsActivity extends AppCompatActivity {
 
         if(SettingsModel.getInstance().getAppSettings(appName) == null)
         {
-            SettingsModel.getInstance().addApp(appName, new AppSettings());
+            SettingsModel.getInstance().addApp(appName, new AppSettings(new FakeMessenger()));
         }
 
         Button contactButton = (Button) findViewById(R.id.contactSettingsButton);

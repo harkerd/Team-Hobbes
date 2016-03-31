@@ -77,7 +77,10 @@ public class Reminder {
     }
 
     public int getTimeSinceReceived() {
-        return timeSinceReceived;
+        long time = new Date().getTime() - timeReceived.getTime();
+        long seconds = time / 1000;
+        long minutes = seconds / 60;
+        return (int)minutes;
     }
 
     public void setTimeSinceReceived(int timeSinceReceived) {
@@ -85,6 +88,9 @@ public class Reminder {
     }
 
     public boolean isOverdue() {
+        if (new Date().after(remindTime)) {
+            return true;
+        }
         return isOverdue;
     }
 
