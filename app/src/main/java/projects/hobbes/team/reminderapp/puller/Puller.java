@@ -123,55 +123,41 @@ public class Puller
                     }
                     SettingsModel.getInstance().getAppSettings(appName).setContacts(contactsForModel);
 
-
-                    List<Reminder> pending = RemindersModel.getInstance().getRemindersList(appName);
-                    List<Reminder> messages = api.getMessages();
+                    //merge lists
+                    List<Reminder> pendingMessagesInModel = RemindersModel.getInstance().getRemindersList(appName);
+                    List<Reminder> messagesFromAPI = api.getMessages();
 
                     List<Reminder> messagesToAdd = new ArrayList<>();
-                    for(Reminder message : messages)
+                    for(Reminder message : messagesFromAPI)
                     {
-                        int index = pending.indexOf(message);
-                        if(index != -1)
+                        //find the index if it is in the model already
+                        int index = pendingMessagesInModel.indexOf(message);
+                        if(index != -1) //if it is NOT in the model already
                         {
-                            message = pending.get(index);
+                            message = pendingMessagesInModel.get(index);
                             String contactName = message.getContactName();
                             Contact contact = contactsForModel.get(contactName);
+                            //update message
                             message.updateData(contact, null);
                         }
-                        else
+                        else //if it IS in the model already
                         {
                             String contactName = message.getContactName();
                             Contact contact = contactsForModel.get(contactName);
                             String reminderTime = contact.getContactSettings().getReminderTime();
-
                             Date remindTime = new Date(message.getTimeReceived().getTime() + stringToMilSeconds(reminderTime));
-
+                            //update message
                             message.updateData(contact, remindTime);
                             messagesToAdd.add(message);
                         }
                     }
 
-                    pending.addAll(messagesToAdd);
-                    for(Reminder reminder : pending)
+                    pendingMessagesInModel.addAll(messagesToAdd);
+                    for(Reminder reminder : pendingMessagesInModel)
                     {
                         if(reminder.isOverdue())
                         {
-                            //TODO: ping notifications
-                        }
-                    }
-
-                    //replace list
-                    List<Reminder> currentReminders = RemindersModel.getInstance().getRemindersList(appName);
-                    for (Reminder newReminder : messagesToAdd) {
-                        boolean isNew = true;
-                        for (Reminder reminder : currentReminders) {
-                            if (reminder.equals(newReminder)) {
-                                isNew = false;
-                                break;
-                            }
-                        }
-                        if (isNew) {
-                            currentReminders.add(newReminder);
+                            MainActivity.sendNotification(reminder);
                         }
                     }
                 }

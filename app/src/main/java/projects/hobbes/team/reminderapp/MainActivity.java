@@ -161,6 +161,7 @@ public class MainActivity extends AppCompatActivity
         SendNotification();
     }
 
+    public static void sendNotification(Reminder reminder) {}
 
     public void SendNotification()
     {
