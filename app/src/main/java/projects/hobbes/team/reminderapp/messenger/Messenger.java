@@ -16,21 +16,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Daniel on 3/31/2016.
  */
 public class Messenger implements API
 {
-    Map<String,Contact> idToContact = new HashMap<String,Contact>();
-
     public List<Contact> getSmsContacts(Context context)
     {
         List<Contact> contactsList = new ArrayList<Contact>();
-        idToContact.clear();
 
         ContentResolver cr = context.getContentResolver();
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
@@ -60,16 +55,16 @@ public class Messenger implements API
 
                     Contact newContact = null;
 
-                    if (phoneNumbers.isEmpty()) {
+                    if (phoneNumbers.isEmpty())
+                    {
                         newContact = new Contact(name);
                     }
                     else
                     {
-                        newContact = new Contact(name,phoneNumbers.get(0),null);
+                        newContact = new Contact(name,phoneNumbers,null);
                     }
 
                     contactsList.add(newContact);
-                    idToContact.put(id,newContact);
                 }
             }
         }
@@ -110,9 +105,6 @@ public class Messenger implements API
     {
         List<Reminder> smsList = new ArrayList<Reminder>();
 
-        //Refresh our map of ids to contacts
-        getSmsContacts(context);
-
         ContentResolver contentResolver = context.getContentResolver();
         Cursor cursor = contentResolver.query(Uri.parse("content://sms/inbox"), null, null, null, null);
 
@@ -131,19 +123,13 @@ public class Messenger implements API
             //Add only unread messages
             if(read.equals("0"))
             {
-                Contact contact = idToContact.get(cursor.getString(indexID));
-
-                //If there is not contact, add the contact using phone number
-                if(contact == null)
-                    contact = new Contact(cursor.getString(indexAddr));
-
                 Date date = new Date();
                 date.setTime(Long.parseLong(cursor.getString(indexDate)));
                 String message = decryptObject(cursor.getString(indexBody));
 
                 Reminder newReminder = new Reminder();
                 newReminder.setApp("Messenger");
-                newReminder.setContact(contact);
+                newReminder.setContact(new Contact(cursor.getString(indexAddr)));
                 newReminder.setIsOverdue(false);
                 newReminder.setMessage(message);
                 newReminder.setTimeReceived(date);
@@ -158,9 +144,6 @@ public class Messenger implements API
         //todo- we only want the most recent message from each person. this list has all the messages. This means if the same person
         //todo- sent more than one message, that person is in there more than once
         //todo also, if possible we only want the messages that we haven't responded to. => don't think this is possible, best I can do right now is to get unread messages
-        //todo- currently the messages have the sender being the sender's phone number,
-        //todo- we want the sender's name if they are a contact in our phone (that should be a task done in the Puller
-        //todo- since it will have the contact list available)
 
         return smsList;
     }
