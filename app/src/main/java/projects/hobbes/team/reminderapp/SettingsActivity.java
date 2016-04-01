@@ -15,6 +15,7 @@ import android.widget.Switch;
 
 import projects.hobbes.team.reminderapp.model.AppSettings;
 import projects.hobbes.team.reminderapp.model.ContactSettings;
+import projects.hobbes.team.reminderapp.model.RemindersModel;
 import projects.hobbes.team.reminderapp.model.SettingsModel;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -148,6 +149,7 @@ public class SettingsActivity extends AppCompatActivity {
                 if(contactName != null)
                 {
                     currentContactSettings.setReminderTime(parent.getItemAtPosition(position).toString());
+                    RemindersModel.getInstance().updateReminderTimeIfNecessary(appName, contactName);
                 }
                 else
                 {
