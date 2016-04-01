@@ -32,63 +32,70 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="5dp">
             <TextView
-                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text="Sound"
-                android:textSize="20dp"
-                android:textColor="@color/black"
-                android:layout_marginRight="20dp"
-                android:layout_marginLeft="20dp"/>
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:textSize="25dp"/>
             <Spinner
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:id="@+id/soundSpinner"></Spinner>
         </LinearLayout>
+        <View style="@style/Divider"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="5dp">
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:text="Vibrate"
-                android:textSize="20dp"
-                android:textColor="@color/black"
-                android:layout_marginRight="20dp"
-                android:layout_marginLeft="20dp"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:textSize="25dp"
                 />
             <Switch
                 android:id="@+id/vibrateToggle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:switchMinWidth="60dp"
                 android:thumbTint="@color/colorPrimary"
                 android:showText="true"
                 android:switchTextAppearance="@style/SwitchTextAppearance"
                 android:trackTint="#346BC1"
                 />
         </LinearLayout>
+
+        <View style="@style/Divider"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="5dp">
             <TextView
-                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text="Time Until Reminded"
-                android:textSize="20dp"
-                android:textColor="@color/black"
-                android:layout_marginRight="20dp"
-                android:layout_marginLeft="20dp"/>
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:textSize="25dp"/>
             <Spinner
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:id="@+id/timesSpinner"></Spinner>
         </LinearLayout>
 
+        <View style="@style/Divider"/>
     </LinearLayout>
 
 
