@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -14,6 +13,9 @@ import projects.hobbes.team.reminderapp.model.Reminder;
 import projects.hobbes.team.reminderapp.puller.API;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,33 +25,12 @@ import java.util.Map;
  */
 public class Messenger implements API
 {
-    private Map<String,String> getIDToNames(Context context)
+    Map<String,Contact> idToContact = new HashMap<String,Contact>();
+
+    public List<Contact> getSmsContacts(Context context)
     {
-        Map<String,String> idToName = new HashMap<String,String>();
-
-        ContentResolver cr = context.getContentResolver();
-        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
-                null, null, null, null);
-
-        if (cur.getCount() > 0)
-        {
-            while (cur.moveToNext())
-            {
-                String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
-                String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-
-                idToName.put(id,name);
-            }
-        }
-        else
-            return null;
-
-        return idToName;
-    }
-
-    public ArrayList<Contact> getSmsContacts(Context context)
-    {
-        ArrayList<Contact> contactsList = new ArrayList<Contact>();
+        List<Contact> contactsList = new ArrayList<Contact>();
+        idToContact.clear();
 
         ContentResolver cr = context.getContentResolver();
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
@@ -64,52 +45,56 @@ public class Messenger implements API
 
                 if (Integer.parseInt(cur.getString(cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0)
                 {
-                    //todo Given that this is for messenger, this should probably get the phone numbers instead of the emails.
-                    //todo. also it only enters this if clause if they have a phone number. This says nothing about whether they have an email address or not
-                    // get email
-                    Cursor emailCur = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,
-                                               null,
-                                               ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
-                                               new String[]{id}, null);
+                    // get the phone number
+                    Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",
+                            new String[]{id}, null);
 
-                    ArrayList<String> emails = new ArrayList<String>();
+                    ArrayList<String> phoneNumbers = new ArrayList<>();
 
-                    while (emailCur.moveToNext()) {
-                        // This would allow you get several email addresses
-                        // if the email addresses were stored in an array
-                        emails.add(emailCur.getString(emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA)));
-                    }
-                    emailCur.close();
-
-                    Contact newContact =  null;
-                    if(emails.isEmpty())
+                    while (pCur.moveToNext())
                     {
+                        phoneNumbers.add(pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+                    }
+                    pCur.close();
+
+                    Contact newContact = null;
+
+                    if (phoneNumbers.isEmpty()) {
                         newContact = new Contact(name);
                     }
                     else
                     {
-                        newContact = new Contact(name,emails.get(0),null);
+                        newContact = new Contact(name,phoneNumbers.get(0),null);
                     }
 
                     contactsList.add(newContact);
+                    idToContact.put(id,newContact);
                 }
             }
         }
         else
-            return null;
-        //todo instead of returning null, make this return an empty list
+            return contactsList;
 
-        //todo sort this by contact name before returning
+        Collections.sort(contactsList, new ContactComparator());
+
         return contactsList;
+    }
+
+    public class ContactComparator implements Comparator<Contact>
+    {
+        @Override
+        public int compare(Contact c1, Contact c2)
+        {
+            return c1.getName().compareTo(c2.getName());
+        }
     }
 
     public String decryptObject(String encryptedMessage)
     {
         try
         {
-            String data = SmsSecurityHandler.decrypt( new String(SmsReceiver.PASSWORD), encryptedMessage );
-
-            return data;
+            return SmsSecurityHandler.decrypt( new String(SmsReceiver.PASSWORD), encryptedMessage );
         }
         catch (Exception e)
         {
@@ -119,58 +104,65 @@ public class Messenger implements API
         return null;
     }
 
-    //Returns null if it body is empty, otherwise return a complete list of all messages.
-    //Use the attributes
-    public ArrayList<Message> getSmsMessages(Context context)
+    //Returns empty list if no messages, otherwise returns a list of all unread messages
+    @Override
+    public List<Reminder> getMessages(Context context)
     {
-        ArrayList<Message> smsList = new ArrayList<Message>();
-        Map<String,String> idToName = getIDToNames(context);
+        List<Reminder> smsList = new ArrayList<Reminder>();
+
+        //Refresh our map of ids to contacts
+        getSmsContacts(context);
 
         ContentResolver contentResolver = context.getContentResolver();
         Cursor cursor = contentResolver.query(Uri.parse("content://sms/inbox"), null, null, null, null);
 
         int indexBody = cursor.getColumnIndex(SmsReceiver.BODY);
         int indexRead = cursor.getColumnIndex(SmsReceiver.READ);
+        int indexDate = cursor.getColumnIndex(SmsReceiver.DATE);
         int indexID = cursor.getColumnIndex(SmsReceiver.PERSON);
         int indexAddr = cursor.getColumnIndex(SmsReceiver.ADDRESS);
 
         if ( indexBody < 0 || !cursor.moveToFirst() ) return null;
 
-        smsList.clear();
-
         do
         {
-            String name = idToName.get(cursor.getString( indexID ));
+            String read = cursor.getString(indexRead);
 
-            if(name == null)
-                name = cursor.getString( indexAddr );
+            //Add only unread messages
+            if(read.equals("0"))
+            {
+                Contact contact = idToContact.get(cursor.getString(indexID));
 
-            Message newMessage = new Message(name, decryptObject(cursor.getString( indexBody )), cursor.getString(indexRead));
-            smsList.add(newMessage);
+                //If there is not contact, add the contact using phone number
+                if(contact == null)
+                    contact = new Contact(cursor.getString(indexAddr));
+
+                Date date = new Date();
+                date.setTime(Long.parseLong(cursor.getString(indexDate)));
+                String message = decryptObject(cursor.getString(indexBody));
+
+                Reminder newReminder = new Reminder();
+                newReminder.setApp("Messenger");
+                newReminder.setContact(contact);
+                newReminder.setIsOverdue(false);
+                newReminder.setMessage(message);
+                newReminder.setTimeReceived(date);
+                newReminder.setTimeSinceReceived(newReminder.getTimeSinceReceived());
+
+                smsList.add(newReminder);
+            }
         }
         while( cursor.moveToNext() );
 
-        return smsList;
-    }
-
-    @Override
-    public List<Reminder> getMessages(Context context) {
-        List<Message> messages = getSmsMessages(context);
-        //todo- the message bodies are all null when I run this at 9:24 pm thursday
-
+        //todo- the message bodies are all null when I run this at 9:24 pm thursday = probably because of the encryption thing...
         //todo- we only want the most recent message from each person. this list has all the messages. This means if the same person
         //todo- sent more than one message, that person is in there more than once
-
-        //todo also, if possible we only want the messages that we haven't responded to.
-
+        //todo also, if possible we only want the messages that we haven't responded to. => don't think this is possible, best I can do right now is to get unread messages
         //todo- currently the messages have the sender being the sender's phone number,
         //todo- we want the sender's name if they are a contact in our phone (that should be a task done in the Puller
         //todo- since it will have the contact list available)
 
-        //todo convert this to a list of Reminder objects and return that list
-        //todo make sure that this doesn't return null. If there aren't any, return an empty list
-        List<Reminder> reminders = new ArrayList<>();
-        return reminders;
+        return smsList;
     }
 
     @Override
