@@ -1,26 +1,33 @@
 package projects.hobbes.team.reminderapp.messenger;
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.widget.Toast;
+
 import projects.hobbes.team.reminderapp.model.Contact;
+import projects.hobbes.team.reminderapp.model.Reminder;
+import projects.hobbes.team.reminderapp.puller.API;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * Created by Daniel on 3/31/2016.
  */
-public class Messenger extends AppCompatActivity
+public class Messenger implements API
 {
-    private Map<String,String> getIDToNames()
+    private Map<String,String> getIDToNames(Context context)
     {
         Map<String,String> idToName = new HashMap<String,String>();
 
-        ContentResolver cr = getContentResolver();
+        ContentResolver cr = context.getContentResolver();
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
                 null, null, null, null);
 
@@ -40,11 +47,11 @@ public class Messenger extends AppCompatActivity
         return idToName;
     }
 
-    public ArrayList<Contact> getSmsContacts()
+    public ArrayList<Contact> getSmsContacts(Context context)
     {
         ArrayList<Contact> contactsList = new ArrayList<Contact>();
 
-        ContentResolver cr = getContentResolver();
+        ContentResolver cr = context.getContentResolver();
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
                 null, null, null, null);
 
@@ -57,6 +64,8 @@ public class Messenger extends AppCompatActivity
 
                 if (Integer.parseInt(cur.getString(cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0)
                 {
+                    //todo Given that this is for messenger, this should probably get the phone numbers instead of the emails.
+                    //todo. also it only enters this if clause if they have a phone number. This says nothing about whether they have an email address or not
                     // get email
                     Cursor emailCur = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,
                                                null,
@@ -88,7 +97,9 @@ public class Messenger extends AppCompatActivity
         }
         else
             return null;
+        //todo instead of returning null, make this return an empty list
 
+        //todo sort this by contact name before returning
         return contactsList;
     }
 
@@ -110,12 +121,12 @@ public class Messenger extends AppCompatActivity
 
     //Returns null if it body is empty, otherwise return a complete list of all messages.
     //Use the attributes
-    public ArrayList<Message> getSmsMessages()
+    public ArrayList<Message> getSmsMessages(Context context)
     {
         ArrayList<Message> smsList = new ArrayList<Message>();
-        Map<String,String> idToName = getIDToNames();
+        Map<String,String> idToName = getIDToNames(context);
 
-        ContentResolver contentResolver = getContentResolver();
+        ContentResolver contentResolver = context.getContentResolver();
         Cursor cursor = contentResolver.query(Uri.parse("content://sms/inbox"), null, null, null, null);
 
         int indexBody = cursor.getColumnIndex(SmsReceiver.BODY);
@@ -140,5 +151,37 @@ public class Messenger extends AppCompatActivity
         while( cursor.moveToNext() );
 
         return smsList;
+    }
+
+    @Override
+    public List<Reminder> getMessages(Context context) {
+        List<Message> messages = getSmsMessages(context);
+        //todo- the message bodies are all null when I run this at 9:24 pm thursday
+
+        //todo- we only want the most recent message from each person. this list has all the messages. This means if the same person
+        //todo- sent more than one message, that person is in there more than once
+
+        //todo also, if possible we only want the messages that we haven't responded to.
+
+        //todo- currently the messages have the sender being the sender's phone number,
+        //todo- we want the sender's name if they are a contact in our phone (that should be a task done in the Puller
+        //todo- since it will have the contact list available)
+
+        //todo convert this to a list of Reminder objects and return that list
+        //todo make sure that this doesn't return null. If there aren't any, return an empty list
+        List<Reminder> reminders = new ArrayList<>();
+        return reminders;
+    }
+
+    @Override
+    public List<Contact> getContacts(Context context) {
+        return getSmsContacts(context);
+    }
+
+    @Override
+    public void launchActivity(Contact contact, Context context) {
+        //todo this will launch the actual Messenger app, not needed for user testing
+        Log.d("Messenger", "launching activity");
+        Toast.makeText(context, "This will actually launch the Messenger app in the real thing", Toast.LENGTH_SHORT).show();
     }
 }

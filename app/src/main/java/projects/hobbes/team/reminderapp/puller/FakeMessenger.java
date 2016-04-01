@@ -43,7 +43,7 @@ public class FakeMessenger implements API {
     }
 
     @Override
-    public List<Reminder> getMessages() {
+    public List<Reminder> getMessages(Context context) {
 
         count++;
         Log.d("FakeMessenger", "count: " + count);
@@ -58,7 +58,7 @@ public class FakeMessenger implements API {
     }
 
     @Override
-    public List<Contact> getContacts() {
+    public List<Contact> getContacts(Context context) {
         return new ArrayList<>(contacts);
     }
 
