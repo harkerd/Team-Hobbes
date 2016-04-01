@@ -31,4 +31,11 @@ public class RemindersModel {
     public List<Reminder> getRemindersList(String appName) {
         return remindersList.get(appName);
     }
+
+    public void clearRemindersList(String appName) {
+        List<Reminder> reminders = this.remindersList.get(appName);
+        if (reminders != null) {
+            reminders.clear();
+        }
+    }
 }

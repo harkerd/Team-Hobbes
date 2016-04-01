@@ -5,12 +5,9 @@ import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
-import android.os.Parcelable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,21 +22,18 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import projects.hobbes.team.reminderapp.expandableReminderList.AddAppObject;
-import projects.hobbes.team.reminderapp.model.ContactSettings;
 
 import com.bignerdranch.expandablerecyclerview.Model.ParentListItem;
-import com.joanzapata.iconify.IconDrawable;
 import com.joanzapata.iconify.Iconify;
-import com.joanzapata.iconify.fonts.FontAwesomeIcons;
 import com.joanzapata.iconify.fonts.FontAwesomeModule;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import projects.hobbes.team.reminderapp.expandableReminderList.MyExpandableAdapter;
 import projects.hobbes.team.reminderapp.expandableReminderList.MyParentObject;
-import projects.hobbes.team.reminderapp.model.Contact;
 import projects.hobbes.team.reminderapp.model.Reminder;
 import projects.hobbes.team.reminderapp.model.RemindersModel;
 import projects.hobbes.team.reminderapp.puller.Puller;
@@ -54,7 +48,6 @@ public class MainActivity extends AppCompatActivity
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
     private GoogleApiClient client;
-    Drawable settingsIcon;
     static RecyclerView recyclerView;
     static MyExpandableAdapter expandableAdapter;
     static Context context;
@@ -76,21 +69,16 @@ public class MainActivity extends AppCompatActivity
 
         Puller.populateFakeData();
         Puller.start();
-        Puller.refresh();
 
         recyclerView = (RecyclerView) findViewById(R.id.app_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        expandableAdapter = new MyExpandableAdapter(this, getMessages());
-        recyclerView.setAdapter(expandableAdapter);
-
 
     }
 
     private List<ParentListItem> getMessages() {
 
         RemindersModel remindersModel = RemindersModel.getInstance();
-
+//todo make this get the apps that are in our object, not hard coded
         List<ParentListItem> parentListItems = new ArrayList<>();
         MyParentObject parentObject = new MyParentObject("Messenger");
         parentObject.setChildItemList(remindersModel.getRemindersList("Messenger"));
@@ -112,6 +100,7 @@ public class MainActivity extends AppCompatActivity
                 public void run() {
                     int size = RemindersModel.getInstance().getRemindersList("Messenger").size();
                     Log.d(TAG, "notifying data set changed. size: " + size);
+//                    refreshReminders();
                     expandableAdapter.notifyDataSetChanged();
                     //todo: this doesn't need to be fixed for our testing, but still
                     //todo-cont: figure out how to make new things appear and old things not disappear if
@@ -119,6 +108,20 @@ public class MainActivity extends AppCompatActivity
                 }
             });
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume");
+        Puller.refresh();
+        Log.d(TAG, "onResume after refresh called");
+        refreshReminders();
+    }
+
+    private static void refreshReminders() {
+        expandableAdapter = new MyExpandableAdapter(context, ((MainActivity)context).getMessages());
+        recyclerView.setAdapter(expandableAdapter);
     }
 
     @Override

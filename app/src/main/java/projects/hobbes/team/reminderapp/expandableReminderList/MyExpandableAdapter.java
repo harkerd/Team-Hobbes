@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -15,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.bignerdranch.expandablerecyclerview.Adapter.ExpandableRecyclerAdapter;
 import com.bignerdranch.expandablerecyclerview.Model.ParentListItem;
@@ -24,7 +24,9 @@ import com.joanzapata.iconify.fonts.FontAwesomeIcons;
 
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import projects.hobbes.team.reminderapp.AppSettingsActivity;
 import projects.hobbes.team.reminderapp.MainActivity;
@@ -80,7 +82,12 @@ public class MyExpandableAdapter extends ExpandableRecyclerAdapter<ParentViewHol
         if (parentListItem instanceof MyParentObject) {
             MyParentObject parentObject = (MyParentObject) parentListItem;
             parentViewHolder.parentTitleTextView.setText(parentObject.getTitle());
-            parentViewHolder.parentNumberIcon.setText(String.valueOf(parentObject.getChildItemList().size()));
+            if (SettingsModel.getInstance().getAppSettings(parentObject.getTitle()).isTurnedOn()) {
+                parentViewHolder.parentNumberIcon.setText(String.valueOf(parentObject.getChildItemList().size()));
+            }
+            else {
+                parentViewHolder.parentNumberIcon.setText("X");
+            }
             parentViewHolder.parentSettingsCog.setImageDrawable(settingsIcon);
             parentViewHolder.parentSettingsCog.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -130,7 +137,7 @@ public class MyExpandableAdapter extends ExpandableRecyclerAdapter<ParentViewHol
             reminderViewHolder.timeTextView.setTextColor(context.getResources().getColor(R.color.colorAccent));
         }
         else {
-            reminderViewHolder.timeTextView.setTextColor(Color.BLACK);
+            reminderViewHolder.timeTextView.setTextColor(context.getResources().getColor(android.R.color.tertiary_text_light));
         }
 
         reminderViewHolder.item.setOnClickListener(new View.OnClickListener() {
@@ -178,6 +185,8 @@ public class MyExpandableAdapter extends ExpandableRecyclerAdapter<ParentViewHol
                         public void onClick(View v) {
                             // remove from list
                             //todo implement this
+                            Log.d("ExpandableAdapter", "ignore button pushed");
+                            Toast.makeText(context, "This will actually remove the reminder in the real thing", Toast.LENGTH_SHORT).show();
                         }
                     });
 
@@ -214,7 +223,7 @@ public class MyExpandableAdapter extends ExpandableRecyclerAdapter<ParentViewHol
             builder.setMessage("There are no other apps supported to add!")
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            // FIRE ZE MISSILES!
+                            // This will add the app
                         }
                     })
                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
