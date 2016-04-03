@@ -124,7 +124,7 @@ public class Messenger implements API
             if(read.equals("0"))
             {
                 Date date = new Date();
-                date.setTime(Long.parseLong(cursor.getString(indexDate)));
+                date.setTime(date.getTime());
                 String message = decryptObject(cursor.getString(indexBody));
 
                 Reminder newReminder = new Reminder();
