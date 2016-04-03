@@ -2,6 +2,9 @@ package projects.hobbes.team.reminderapp.model;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+
+import projects.hobbes.team.reminderapp.puller.FakeMessenger;
 
 public class SettingsModel {
 
@@ -10,7 +13,7 @@ public class SettingsModel {
 
     private SettingsModel() {
         appSettingsMap = new HashMap<>();
-        appSettingsMap.put("Messenger", new AppSettings());
+//        appSettingsMap.put("Messenger", new AppSettings(new FakeMessenger()));
     }
 
     public static SettingsModel getInstance() {
@@ -28,9 +31,7 @@ public class SettingsModel {
         return appSettingsMap.get(appName);
     }
 
-
-
-    public String[] getAppNames() {
-        return (String[]) appSettingsMap.keySet().toArray();
+    public Set<String> getAppNames() {
+        return appSettingsMap.keySet();
     }
 }

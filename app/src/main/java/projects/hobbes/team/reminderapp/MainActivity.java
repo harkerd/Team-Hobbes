@@ -5,17 +5,15 @@ import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
-import android.os.Parcelable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -23,21 +21,19 @@ import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 
-import projects.hobbes.team.reminderapp.model.ContactSettings;
+import projects.hobbes.team.reminderapp.expandableReminderList.AddAppObject;
 
 import com.bignerdranch.expandablerecyclerview.Model.ParentListItem;
-import com.joanzapata.iconify.IconDrawable;
 import com.joanzapata.iconify.Iconify;
-import com.joanzapata.iconify.fonts.FontAwesomeIcons;
 import com.joanzapata.iconify.fonts.FontAwesomeModule;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import projects.hobbes.team.reminderapp.expandableReminderList.MyExpandableAdapter;
 import projects.hobbes.team.reminderapp.expandableReminderList.MyParentObject;
-import projects.hobbes.team.reminderapp.model.Contact;
 import projects.hobbes.team.reminderapp.model.Reminder;
 import projects.hobbes.team.reminderapp.model.RemindersModel;
 import projects.hobbes.team.reminderapp.puller.Puller;
@@ -45,14 +41,16 @@ import projects.hobbes.team.reminderapp.puller.Puller;
 public class MainActivity extends AppCompatActivity
 {
 
+    private static final String TAG = "MainActivity";
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
     private GoogleApiClient client;
-    Drawable settingsIcon;
-    RecyclerView recyclerView;
+    static RecyclerView recyclerView;
+    static MyExpandableAdapter expandableAdapter;
+    static Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -61,6 +59,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        context = this;
 
         Iconify.with(new FontAwesomeModule());
 
@@ -68,45 +67,61 @@ public class MainActivity extends AppCompatActivity
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
+        Puller.populateFakeData();
+        Puller.start();
+
         recyclerView = (RecyclerView) findViewById(R.id.app_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        MyExpandableAdapter expandableAdapter = new MyExpandableAdapter(this, getMessages());
-        recyclerView.setAdapter(expandableAdapter);
-
-        Puller.start();
-        Puller.populateFakeData();
-
-//        Intent intent = new Intent(this, NotificationService.class);
-//        startService(intent);
-
-
 
     }
 
     private List<ParentListItem> getMessages() {
 
         RemindersModel remindersModel = RemindersModel.getInstance();
-
-        // todo: RemindersModel will need to call to get actual messages for the apps
-        List<Reminder> reminders = new ArrayList<>();
-//        Reminder reminder = new Reminder(new Contact(new ContactSettings(), "Bob Joe", "(555)555-5555").getName(), "Messenger",
-//                "What are you up to?", new Date(), 30, true);
-//        Reminder reminder2 = new Reminder(new Contact(new ContactSettings(), "John Smith", "(555)555-5555"), "Messenger",
-//                "Knock knock!", new Date(), 40, true);
-//        Reminder reminder3 = new Reminder(new Contact(new ContactSettings(), "Raul Diego", "(555)555-5555"), "Messenger",
-//                "What's up dude?", new Date(), 10, false);
-//        reminders.add(reminder3);
-//        reminders.add(reminder);
-//        reminders.add(reminder2);
-        remindersModel.addApp("Messenger", reminders);
-
+//todo make this get the apps that are in our object, not hard coded
         List<ParentListItem> parentListItems = new ArrayList<>();
         MyParentObject parentObject = new MyParentObject("Messenger");
-        parentObject.setChildItemList(reminders);
+        parentObject.setChildItemList(remindersModel.getRemindersList("Messenger"));
         parentListItems.add(parentObject);
 
+        parentListItems.add(new AddAppObject());
+
         return parentListItems;
+    }
+
+    public static void refreshList() {
+        if (context == null || !((MainActivity)context).hasWindowFocus()) {
+            return;
+        }
+        if (recyclerView != null && expandableAdapter != null) {
+//todo make it so that buttons aren't spuriosly acting up when this updates them
+            ((MainActivity)context).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    int size = RemindersModel.getInstance().getRemindersList("Messenger").size();
+                    Log.d(TAG, "notifying data set changed. size: " + size);
+//                    refreshReminders();
+                    expandableAdapter.notifyDataSetChanged();
+                    //todo: this doesn't need to be fixed for our testing, but still
+                    //todo-cont: figure out how to make new things appear and old things not disappear if
+                    //todo-cont: an app is expanded and a new reminder comes in
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume");
+        Puller.refresh();
+        Log.d(TAG, "onResume after refresh called");
+        refreshReminders();
+    }
+
+    private static void refreshReminders() {
+        expandableAdapter = new MyExpandableAdapter(context, ((MainActivity)context).getMessages());
+        recyclerView.setAdapter(expandableAdapter);
     }
 
     @Override
@@ -151,6 +166,7 @@ public class MainActivity extends AppCompatActivity
         n.SendNotification(this, r);
     }
 
+    public static void sendNotification(Reminder reminder) {}
 
     public void SendNotification()
     {

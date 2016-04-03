@@ -28,60 +28,69 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="80dp">
+        android:layout_marginTop="80dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="5dp">
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:textSize="25dp"
                 android:text="Reminders"
-                android:textSize="20dp"
-                android:textColor="@color/black"
-                android:layout_marginRight="20dp"
-                android:layout_marginLeft="20dp"
                 />
             <Switch
                 android:id="@+id/appRemindersToggle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:switchMinWidth="60dp"
+                android:layout_alignParentRight="true"
                 android:thumbTint="@color/colorPrimary"
                 android:showText="true"
                 android:switchTextAppearance="@style/SwitchTextAppearance"
                 android:trackTint="#346BC1"/>
+
         </LinearLayout>
+
+        <View style="@style/Divider"/>
         <RelativeLayout
+            android:id="@+id/defaultSettingsButton"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <Button
-                android:id="@+id/defaultSettingsButton"
-                android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp">
+            <TextView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Default Settings"
-                android:background="@color/colorPrimary"
-                android:textSize="20dp"
-                android:layout_marginTop="70dp"
-                android:textColor="@color/white"
-                android:layout_centerInParent="true"
-                android:clickable="true"/>
+                android:layout_marginLeft="5dp"
+                android:textSize="25sp"
+                android:text="Default Settings"/>
+
         </RelativeLayout>
+        <View style="@style/Divider"/>
         <RelativeLayout
+            android:id="@+id/contactSettingsButton"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <Button
-                android:id="@+id/contactSettingsButton"
-                android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp">
+            <TextView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Contact Settings"
-                android:background="@color/colorPrimary"
-                android:textSize="20dp"
-                android:layout_marginTop="10dp"
-                android:textColor="@color/white"
-                android:layout_centerInParent="true"
-                android:clickable="true"/>
+                android:layout_marginLeft="5dp"
+                android:textSize="25sp"
+                android:text="Contact Settings"/>
+
+
         </RelativeLayout>
+    <View style="@style/Divider"/>
     </LinearLayout>
 
 

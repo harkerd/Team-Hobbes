@@ -1,5 +1,6 @@
 package projects.hobbes.team.reminderapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -14,10 +15,14 @@ import android.widget.Switch;
 
 import projects.hobbes.team.reminderapp.model.AppSettings;
 import projects.hobbes.team.reminderapp.model.ContactSettings;
+import projects.hobbes.team.reminderapp.model.RemindersModel;
 import projects.hobbes.team.reminderapp.model.SettingsModel;
 
 public class SettingsActivity extends AppCompatActivity {
 
+    //todo make this better
+    private static final String NAME_KEY = "contactName";
+    private static final String APP_KEY = "reminderapp.settings.appkey";
     public String contactName;
     public String appName;
     public ContactSettings currentContactSettings;
@@ -29,7 +34,7 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        //contactName = "John Doe";
+        contactName = getIntent().getStringExtra(NAME_KEY);
         appName = "Messenger";
 
 
@@ -40,6 +45,9 @@ public class SettingsActivity extends AppCompatActivity {
             setTitle(contactName + "'s Settings");
             currentContactSettings = currentAppSettings.getSpecificContactSettings(contactName);
 
+        }
+        else {
+            setTitle(appName + "'s Default Settings");
         }
 
 
@@ -141,6 +149,7 @@ public class SettingsActivity extends AppCompatActivity {
                 if(contactName != null)
                 {
                     currentContactSettings.setReminderTime(parent.getItemAtPosition(position).toString());
+                    RemindersModel.getInstance().updateReminderTimeIfNecessary(appName, contactName);
                 }
                 else
                 {

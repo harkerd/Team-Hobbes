@@ -14,9 +14,10 @@ public class AppSettings {
     private API api;
     //private String pollingIntervals???
 
-    public AppSettings() {
+    public AppSettings(API api) {
         defaultContactSettings = new ContactSettings();
         contactMap = new TreeMap<>();
+        this.api = api;
     }
 
     public ContactSettings getDefaultContactSettings() {

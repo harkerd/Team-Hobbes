@@ -22,15 +22,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AppRemindersActivity"
-            android:label="@string/title_activity_app_reminders"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="projects.hobbes.team.reminderapp.MainActivity" />
-        </activity>
-        <activity
             android:name=".AppSettingsActivity"
             android:label="@string/title_activity_app_settings"
             android:theme="@style/AppTheme.NoActionBar" />

@@ -11,6 +11,7 @@ import java.util.List;
 
 import java.util.Map;
 
+import projects.hobbes.team.reminderapp.MainActivity;
 import projects.hobbes.team.reminderapp.model.AppSettings;
 import projects.hobbes.team.reminderapp.model.Contact;
 import projects.hobbes.team.reminderapp.model.Reminder;
@@ -28,8 +29,10 @@ public class Puller
         {
             puller = new PullerThread();
         }
-        populateFakeData();
-        puller.start();
+        if ( !((PullerThread)puller).isRunning() ) {
+            //populateFakeData();
+            puller.start();
+        }
     }
 
     public static void stop()
@@ -45,30 +48,46 @@ public class Puller
         }
     }
 
+    private static final int SECOND = 1000;
+    private static final int QUARTER_MINUTE = 15 * SECOND;
+    private static final int HALF_MINUTE = 30 * SECOND;
+    private static final int MINUTE = 60 * SECOND;
+    private static final int QUARTER_HOUR = 15 * MINUTE;
+    private static final int HALF_HOUR = 30 * MINUTE;
+    private static final int HOUR = 60 * MINUTE;
+
+    public static int stringToMilSeconds(String time) {
+        int milSeconds = 0;
+
+        switch (time) {
+            case "15 Min": milSeconds = QUARTER_HOUR; break;
+            case "30 Min": milSeconds = HALF_HOUR; break;
+            case "45 Min": milSeconds = QUARTER_HOUR + HALF_HOUR; break;
+            case "1 hour": milSeconds = HOUR; break;
+        }
+
+        return milSeconds;
+    }
+
     private static class PullerThread extends Thread
     {
-        private static final int SECOND = 1000;
-        private static final int QUARTER_MINUTE = 15 * SECOND;
-        private static final int HALF_MINUTE = 30 * SECOND;
-        private static final int MINUTE = 60 * SECOND;
-        private static final int QUARTER_HOUR = 15 * MINUTE;
-        private static final int HALF_HOUR = 30 * MINUTE;
-        private static final int HOUR = 60 * MINUTE;
-
         private int waitTime = QUARTER_MINUTE;
-        private boolean running = true;
+        private boolean running = false;
 
-        private int stringToMilSeconds(String time) {
-            int milSeconds = 0;
+        public boolean isRunning() {
+            return running;
+        }
 
-            switch (time) {
-                case "15 Min": milSeconds = QUARTER_HOUR; break;
-                case "30 Min": milSeconds = HALF_HOUR; break;
-                case "45 Min": milSeconds = QUARTER_HOUR + HALF_HOUR; break;
-                case "1 hour": milSeconds = HOUR; break;
-            }
+        @Override
+        public void start() {
+            super.start();
+            running = true;
+        }
 
-            return milSeconds;
+        @Override
+        public void interrupt() {
+            super.interrupt();
+            running = false;
         }
 
         @Override
@@ -76,6 +95,8 @@ public class Puller
         {
             while(running)
             {
+                updateReminders();
+                Log.d(TAG, "update");
                 try
                 {
                     synchronized(this) {
@@ -86,15 +107,11 @@ public class Puller
                 {
                     running = false;
                 }
-
-                updateReminders();
-                Log.d(TAG, "update");
             }
         }
 
         private void updateReminders()
         {
-            /*
             for(String appName : SettingsModel.getInstance().getAppNames())
             {
                 AppSettings app = SettingsModel.getInstance().getAppSettings(appName);
@@ -109,50 +126,49 @@ public class Puller
                     }
                     SettingsModel.getInstance().getAppSettings(appName).setContacts(contactsForModel);
 
-
-                    List<Reminder> pending = RemindersModel.getInstance().getRemindersList(appName);
-                    List<Reminder> messages = api.getMessages();
+                    //merge lists
+                    List<Reminder> pendingMessagesInModel = RemindersModel.getInstance().getRemindersList(appName);
+                    List<Reminder> messagesFromAPI = api.getMessages();
 
                     List<Reminder> messagesToAdd = new ArrayList<>();
-                    for(Reminder message : messages)
+                    for(Reminder message : messagesFromAPI)
                     {
-                        int index = pending.indexOf(message);
-                        if(index != -1)
+                        //find the index if it is in the model already
+                        int index = pendingMessagesInModel.indexOf(message);
+                        if(index != -1) //if it is NOT in the model already
                         {
-                            message = pending.get(index);
+                            message = pendingMessagesInModel.get(index);
                             String contactName = message.getContactName();
                             Contact contact = contactsForModel.get(contactName);
+                            //update message
                             message.updateData(contact, null);
                         }
-                        else
+                        else //if it IS in the model already
                         {
                             String contactName = message.getContactName();
                             Contact contact = contactsForModel.get(contactName);
                             String reminderTime = contact.getContactSettings().getReminderTime();
-
                             Date remindTime = new Date(message.getTimeReceived().getTime() + stringToMilSeconds(reminderTime));
-
+                            //update message
                             message.updateData(contact, remindTime);
                             messagesToAdd.add(message);
                         }
                     }
 
-                    pending.addAll(messagesToAdd);
-                    for(Reminder reminder : pending)
+                    pendingMessagesInModel.addAll(messagesToAdd);
+                    for(Reminder reminder : pendingMessagesInModel)
                     {
                         if(reminder.isOverdue())
                         {
-                            //TODO: ping notifications
-                            //TODO: ping the MainActivity
+                            MainActivity.sendNotification(reminder);
                         }
                     }
-
-                    //replace list
-
                 }
             }
-            //*/
+            MainActivity.refreshList();
         }
+
+
     }
 
     /*private static class PullerService extends Service
@@ -181,7 +197,9 @@ public class Puller
 
     public static void populateFakeData()
     {
-        SettingsModel.getInstance().addApp("Messenger", new AppSettings());
+        API fakeMessenger = new FakeMessenger();
+        SettingsModel.getInstance().addApp("Messenger", new AppSettings(fakeMessenger));
+        RemindersModel.getInstance().addApp("Messenger", new ArrayList<Reminder>());
 
         SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("John Doe", new Contact("John Doe"));
         SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("John Smith", new Contact("John Smith"));
