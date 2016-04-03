@@ -25,7 +25,7 @@ public class Notification {
 //                        .setContentText("Knock knock!");
         RemoteViews rv = new RemoteViews("projects.hobbes.team.reminderapp", R.layout.notification_simple);
 //        rv.setString(R.id.Name, "setText", "TestName");
-        rv.setTextViewText(R.id.Name, reminder.getContact().getName());
+        rv.setTextViewText(R.id.Name, reminder.getContactName());
         rv.setTextViewText(R.id.Content, reminder.getMessage());
 
         NotificationCompat.Builder mBuilder =

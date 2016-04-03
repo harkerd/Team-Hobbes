@@ -28,6 +28,7 @@ import com.joanzapata.iconify.Iconify;
 import com.joanzapata.iconify.fonts.FontAwesomeModule;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -161,57 +162,60 @@ public class MainActivity extends AppCompatActivity
     public void onPause()
     {
         super.onPause();
-        Reminder r = new Reminder("Test Name", "Messenger", "Text of long message", new Date(System.currentTimeMillis()), 7);
+//        Reminder r = new Reminder("Test Name", "Messenger", "Text of long message", new Date(System.currentTimeMillis()), 7);
+//        Notification n = new Notification();
+//        n.SendNotification(this, r);
+    }
+
+    public static void sendNotification(Reminder reminder) {
         Notification n = new Notification();
-        n.SendNotification(this, r);
+        n.SendNotification(context, reminder);
     }
 
-    public static void sendNotification(Reminder reminder) {}
-
-    public void SendNotification()
-    {
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.headelephantlight)
-                        .setContentTitle("John Smith")
-                        .setContentText("Knock knock!");
-
-        NotificationCompat.InboxStyle inboxStyle =
-                new NotificationCompat.InboxStyle();
-        String[] events = new String[6];
-// Sets a title for the Inbox in expanded layout
-        inboxStyle.setBigContentTitle("Event tracker details:");
-// Moves events into the expanded layout
-        for (int i = 0; i < events.length; i++)
-        {
-            events[i] = "test";
-            inboxStyle.addLine(events[i]);
-        }
-// Moves the expanded layout object into the notification object.
-       // mBuilder.setStyle(inboxStyle);
-// Creates an explicit intent for an Activity in your app
-        Intent resultIntent = new Intent(this, MainActivity.class);
-
-// The stack builder object will contain an artificial back stack for the
-// started Activity.
-// This ensures that navigating backward from the Activity leads out of
-// your application to the Home screen.
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-// Adds the back stack for the Intent (but not the Intent itself)
-        stackBuilder.addParentStack(MainActivity.class);
-// Adds the Intent that starts the Activity to the top of the stack
-        stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(
-                        0,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
-        mBuilder.setContentIntent(resultPendingIntent);
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-// mId allows you to update the notification later on.
-        mNotificationManager.notify(0, mBuilder.build());
-    }
+//    public void SendNotification()
+//    {
+//        NotificationCompat.Builder mBuilder =
+//                new NotificationCompat.Builder(this)
+//                        .setSmallIcon(R.drawable.headelephantlight)
+//                        .setContentTitle("John Smith")
+//                        .setContentText("Knock knock!");
+//
+//        NotificationCompat.InboxStyle inboxStyle =
+//                new NotificationCompat.InboxStyle();
+//        String[] events = new String[6];
+//// Sets a title for the Inbox in expanded layout
+//        inboxStyle.setBigContentTitle("Event tracker details:");
+//// Moves events into the expanded layout
+//        for (int i = 0; i < events.length; i++)
+//        {
+//            events[i] = "test";
+//            inboxStyle.addLine(events[i]);
+//        }
+//// Moves the expanded layout object into the notification object.
+//       // mBuilder.setStyle(inboxStyle);
+//// Creates an explicit intent for an Activity in your app
+//        Intent resultIntent = new Intent(this, MainActivity.class);
+//
+//// The stack builder object will contain an artificial back stack for the
+//// started Activity.
+//// This ensures that navigating backward from the Activity leads out of
+//// your application to the Home screen.
+//        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+//// Adds the back stack for the Intent (but not the Intent itself)
+//        stackBuilder.addParentStack(MainActivity.class);
+//// Adds the Intent that starts the Activity to the top of the stack
+//        stackBuilder.addNextIntent(resultIntent);
+//        PendingIntent resultPendingIntent =
+//                stackBuilder.getPendingIntent(
+//                        0,
+//                        PendingIntent.FLAG_UPDATE_CURRENT
+//                );
+//        mBuilder.setContentIntent(resultPendingIntent);
+//        NotificationManager mNotificationManager =
+//                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//// mId allows you to update the notification later on.
+//        mNotificationManager.notify(0, mBuilder.build());
+//    }
 
     @Override
     public void onStart()
