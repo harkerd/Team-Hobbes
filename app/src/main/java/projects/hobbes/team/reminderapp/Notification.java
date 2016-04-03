@@ -15,9 +15,11 @@ import projects.hobbes.team.reminderapp.model.Reminder;
  */
 public class Notification {
 
+    private Reminder _reminder;
 
     public void SendNotification(Context context, Reminder reminder)
     {
+        _reminder = reminder;
 //        NotificationCompat.Builder mBuilder =
 //                new NotificationCompat.Builder(context)
 //                        .setSmallIcon(R.drawable.headelephantlight)
