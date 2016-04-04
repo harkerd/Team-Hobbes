@@ -25,7 +25,8 @@
             android:gravity="start|center"
             android:text="John Snow"
             android:textStyle="bold"
-            android:layout_gravity="start" />
+            android:layout_gravity="start"
+            android:textColor="@color/black"/>
 
         <TextView
             android:layout_width="wrap_content"
