@@ -10,9 +10,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 
+import java.util.ArrayList;
+
 import projects.hobbes.team.reminderapp.model.AppSettings;
+import projects.hobbes.team.reminderapp.model.Reminder;
+import projects.hobbes.team.reminderapp.model.RemindersModel;
 import projects.hobbes.team.reminderapp.model.SettingsModel;
 import projects.hobbes.team.reminderapp.puller.FakeMessenger;
 
@@ -41,6 +46,9 @@ public class AppSettingsActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 SettingsModel.getInstance().getAppSettings(appName).toggleIsTurnedOn();
+                if (!SettingsModel.getInstance().getAppSettings(appName).isTurnedOn()) {
+                    RemindersModel.getInstance().clearRemindersList(appName);
+                }
             }
         });
 
@@ -50,24 +58,20 @@ public class AppSettingsActivity extends AppCompatActivity {
             SettingsModel.getInstance().addApp(appName, new AppSettings(new FakeMessenger()));
         }
 
-        Button contactButton = (Button) findViewById(R.id.contactSettingsButton);
-        Button defaultButton = (Button) findViewById(R.id.defaultSettingsButton);
+        RelativeLayout contactButton = (RelativeLayout) findViewById(R.id.contactSettingsButton);
+        RelativeLayout defaultButton = (RelativeLayout) findViewById(R.id.defaultSettingsButton);
 
-        defaultButton.setOnClickListener(new View.OnClickListener()
-        {
+        defaultButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), SettingsActivity.class);
                 startActivity(intent);
             }
         });
 
-        contactButton.setOnClickListener(new View.OnClickListener()
-        {
+        contactButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), ContactsListActivity.class);
                 intent.putExtra("AppName", appName);
                 startActivity(intent);

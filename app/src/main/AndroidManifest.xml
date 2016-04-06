@@ -11,6 +11,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <uses-permission android:name="android.permission.WAKE_LOCK"/>
+        <receiver android:process=":remote" android:name=".NotificationAlarm"></receiver>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -20,15 +23,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name=".AppRemindersActivity"
-            android:label="@string/title_activity_app_reminders"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="projects.hobbes.team.reminderapp.MainActivity" />
         </activity>
         <activity
             android:name=".AppSettingsActivity"
@@ -47,11 +41,14 @@
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
-        <!-- ATTENTION: This was auto-generated to add Google Play services to your project for
-             App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
         <meta-data
             android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version"/>
+            android:value="@integer/google_play_services_version" />
+
+        <service
+            android:name=".NotificationService"
+            android:enabled="true"
+            android:exported="true"/>
     </application>
 
 </manifest>

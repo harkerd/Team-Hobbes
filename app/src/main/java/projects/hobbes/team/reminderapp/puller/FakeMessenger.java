@@ -31,8 +31,8 @@ public class FakeMessenger implements API {
     List<Contact> contacts = new ArrayList<>();
 
     public FakeMessenger() {
-        reminders.add(reminder1);
         reminders.add(reminder2);
+        reminders.add(reminder1);
         reminders.add(reminder3);
         contacts.add(new Contact("John Doe"));
         contacts.add(new Contact("John Smith"));
