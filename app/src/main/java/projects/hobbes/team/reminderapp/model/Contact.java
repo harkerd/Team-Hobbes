@@ -2,11 +2,13 @@ package projects.hobbes.team.reminderapp.model;
 
 import android.media.Image;
 
+import java.util.List;
+
 public class Contact {
 
     private ContactSettings contactSettings;
     private String name;
-    private String contactInfo;
+    private List<String> contactInfo;
     private Image image;
 
     public Contact(String name) {
@@ -14,14 +16,14 @@ public class Contact {
         contactSettings = new ContactSettings();
     }
 
-    public Contact(String name, String contactInfo, Image image) {
+    public Contact(String name, List<String> contactInfo, Image image) {
         this.name = name;
         this.contactInfo = contactInfo;
         this.image = image;
         contactSettings = new ContactSettings();
     }
 
-    public Contact(ContactSettings contactSettings, String name, String contactInfo) {
+    public Contact(ContactSettings contactSettings, String name, List<String> contactInfo) {
         this.contactSettings = contactSettings;
         this.name = name;
         this.contactInfo = contactInfo;
@@ -49,11 +51,11 @@ public class Contact {
         this.name = name;
     }
 
-    public String getContactInfo() {
+    public List<String> getContactInfo() {
         return contactInfo;
     }
 
-    public void setContactInfo(String contactInfo) {
+    public void setContactInfo(List<String> contactInfo) {
         this.contactInfo = contactInfo;
     }
 }
