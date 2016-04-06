@@ -27,7 +27,6 @@ public class Messenger implements API
 {
     public static final String ADDRESS = "address";
     public static final String DATE = "date";
-    public static final String DATE_SENT = "date_sent";
     public static final String READ = "read";
     public static final String BODY = "body";
 
@@ -118,20 +117,22 @@ public class Messenger implements API
         Cursor inboxCursor = contentResolver.query(Uri.parse("content://sms/inbox"), null, null, null, null);
         Cursor sentCursor = contentResolver.query(Uri.parse("content://sms/sent"), null, null, null, null);
 
-        //Inbox Column Indexes
+        //SMS Column Indexes
         int indexBody = inboxCursor.getColumnIndex(BODY);
         int indexRead = inboxCursor.getColumnIndex(READ);
         int indexDate = inboxCursor.getColumnIndex(DATE);
         int indexAddr = inboxCursor.getColumnIndex(ADDRESS);
-
-        //Outbox Column Indexes
-        int indexDateSent = sentCursor.getColumnIndex(DATE_SENT);
 
         if ( indexBody < 0 || !inboxCursor.moveToFirst() ) return smsList;
 
         do
         {
             String address = inboxCursor.getString(indexAddr);
+
+            //if it is not a proper phone number we probably cannot even or
+            //don't even want to reply to it (ie. message for 2 factor authentication)
+            if(address.length() < 10)
+                continue;
 
             if(alreadyGotMostRecent.contains(address))
             {
