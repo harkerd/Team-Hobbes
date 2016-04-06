@@ -23,6 +23,15 @@ import java.util.List;
  */
 public class Messenger implements API
 {
+    public static final String ADDRESS = "address";
+    public static final String PERSON = "person";
+    public static final String DATE = "date";
+    public static final String READ = "read";
+    public static final String STATUS = "status";
+    public static final String TYPE = "type";
+    public static final String BODY = "body";
+    public static final String SEEN = "seen";
+
     public List<Contact> getSmsContacts(Context context)
     {
         List<Contact> contactsList = new ArrayList<Contact>();
@@ -49,7 +58,21 @@ public class Messenger implements API
 
                     while (pCur.moveToNext())
                     {
-                        phoneNumbers.add(pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+                        String currPhoneNum = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+
+                        StringBuilder phoneNumber = new StringBuilder("");
+
+                        for(int i = 0; i < name.length(); i++)
+                        {
+                            char currChar = name.charAt(i);
+
+                            if(Character.isDigit(currChar))
+                            {
+                                phoneNumber.append(currChar);
+                            }
+                        }
+
+                        phoneNumbers.add(phoneNumber.toString());
                     }
                     pCur.close();
 
@@ -85,20 +108,6 @@ public class Messenger implements API
         }
     }
 
-    public String decryptObject(String encryptedMessage)
-    {
-        try
-        {
-            return SmsSecurityHandler.decrypt( new String(SmsReceiver.PASSWORD), encryptedMessage );
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
     //Returns empty list if no messages, otherwise returns a list of all unread messages
     @Override
     public List<Reminder> getMessages(Context context)
@@ -108,11 +117,10 @@ public class Messenger implements API
         ContentResolver contentResolver = context.getContentResolver();
         Cursor cursor = contentResolver.query(Uri.parse("content://sms/inbox"), null, null, null, null);
 
-        int indexBody = cursor.getColumnIndex(SmsReceiver.BODY);
-        int indexRead = cursor.getColumnIndex(SmsReceiver.READ);
-        int indexDate = cursor.getColumnIndex(SmsReceiver.DATE);
-        int indexID = cursor.getColumnIndex(SmsReceiver.PERSON);
-        int indexAddr = cursor.getColumnIndex(SmsReceiver.ADDRESS);
+        int indexBody = cursor.getColumnIndex(BODY);
+        int indexRead = cursor.getColumnIndex(READ);
+        int indexDate = cursor.getColumnIndex(DATE);
+        int indexAddr = cursor.getColumnIndex(ADDRESS);
 
         if ( indexBody < 0 || !cursor.moveToFirst() ) return null;
 
@@ -126,23 +134,14 @@ public class Messenger implements API
             {
                 Date date = new Date(Long.parseLong(time));
                 String message = cursor.getString(indexBody);
-
-                Reminder newReminder = new Reminder();
-                newReminder.setApp("Messenger");
-                newReminder.setMessage(message);
-                newReminder.setTimeReceived(date);
-
-                newReminder = new Reminder(cursor.getString(indexAddr), "Messenger", message, date);
+                Reminder newReminder = new Reminder(cursor.getString(indexAddr), "Messenger", message, date);
 
                 smsList.add(newReminder);
             }
         }
         while( cursor.moveToNext() );
 
-        //todo- the message bodies are all null when I run this at 9:24 pm thursday = probably because of the encryption thing...
-        //todo- we only want the most recent message from each person. this list has all the messages. This means if the same person
-        //todo- sent more than one message, that person is in there more than once
-        //todo also, if possible we only want the messages that we haven't responded to. => don't think this is possible, best I can do right now is to get unread messages
+        //todo also, if possible we only want the messages that we haven't responded to.
 
         return smsList;
     }
@@ -153,7 +152,8 @@ public class Messenger implements API
     }
 
     @Override
-    public void launchActivity(Contact contact, Context context) {
+    public void launchActivity(Contact contact, Context context)
+    {
         //todo this will launch the actual Messenger app, not needed for user testing
         Log.d("Messenger", "launching activity");
         Toast.makeText(context, "This will actually launch the Messenger app in the real thing", Toast.LENGTH_SHORT).show();
