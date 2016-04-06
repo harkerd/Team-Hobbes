@@ -24,12 +24,11 @@ public class Reminder {
 
     }
 
-    public Reminder(String contactName, String app, String message, Date timeReceived, int timeSinceReceived) {
+    public Reminder(String contactName, String app, String message, Date timeReceived) {
         this.contactName = contactName;
         this.app = app;
         this.message = message;
         this.timeReceived = timeReceived;
-        this.timeSinceReceived = timeSinceReceived;
     }
 
     public void updateData(Contact contact, Date remindTime) {

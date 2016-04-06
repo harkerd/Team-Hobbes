@@ -119,21 +119,20 @@ public class Messenger implements API
         do
         {
             String read = cursor.getString(indexRead);
+            String time = cursor.getString(indexDate);
 
             //Add only unread messages
             if(read.equals("0"))
             {
-                Date date = new Date();
-                date.setTime(date.getTime());
-                String message = decryptObject(cursor.getString(indexBody));
+                Date date = new Date(Long.parseLong(time));
+                String message = cursor.getString(indexBody);
 
                 Reminder newReminder = new Reminder();
                 newReminder.setApp("Messenger");
-                newReminder.setContact(new Contact(cursor.getString(indexAddr)));
-                newReminder.setIsOverdue(false);
                 newReminder.setMessage(message);
                 newReminder.setTimeReceived(date);
-                newReminder.setTimeSinceReceived(newReminder.getTimeSinceReceived());
+
+                newReminder = new Reminder(cursor.getString(indexAddr), "Messenger", message, date);
 
                 smsList.add(newReminder);
             }

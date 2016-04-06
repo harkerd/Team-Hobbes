@@ -23,10 +23,10 @@ public class FakeMessenger implements API {
     int count = 0;
 
     List<Reminder> reminders = new ArrayList<>();
-    Reminder reminder1 = new Reminder("John Doe", "Messenger", "What are you up to?", new Date(new Date().getTime() - 30*1000*60), time1);
-    Reminder reminder2 = new Reminder("John Smith", "Messenger", "Knock knock!", new Date(new Date().getTime() - 40*1000*60), time2);
-    Reminder reminder3 = new Reminder("Bosco", "Messenger", "What's up dude?", new Date(new Date().getTime() - 10*1000*60), time3);
-    Reminder reminder4 = new Reminder("James Bond", "Messenger", "score!", new Date(), time4);
+    Reminder reminder1 = new Reminder("John Doe", "Messenger", "What are you up to?", new Date(new Date().getTime() - 30*1000*60));
+    Reminder reminder2 = new Reminder("John Smith", "Messenger", "Knock knock!", new Date(new Date().getTime() - 40*1000*60));
+    Reminder reminder3 = new Reminder("Bosco", "Messenger", "What's up dude?", new Date(new Date().getTime() - 10*1000*60));
+    Reminder reminder4 = new Reminder("James Bond", "Messenger", "score!", new Date());
 
     List<Contact> contacts = new ArrayList<>();
 

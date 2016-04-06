@@ -138,31 +138,33 @@ public class Puller
                     {
                         //find the index if it is in the model already
                         int index = pendingMessagesInModel.indexOf(message);
-                        if(index != -1) //if it is NOT in the model already
+                        if(index != -1) //if it is IS in the model already
                         {
                             message = pendingMessagesInModel.get(index);
-                            String contactName = message.getContactName();
-                            Contact contact = null;
-                            if(contactsForModel.containsKey(contactName))
-                            {
-                                contact = contactsForModel.get(contactName);
-                            }
-                            else
-                            {
-                                ContactSettings defaultSettings = SettingsModel.getInstance().getAppSettings(appName).getDefaultContactSettings();
-                                contact = new Contact(defaultSettings, contactName, null);
-                            }
+//                            String contactName = message.getContactName();
+                            Contact contact = message.getContact();
                             //update message
                             message.updateData(contact, null);
                         }
-                        else //if it IS in the model already
+                        else //if it NOT in the model already
                         {
                             String contactName = message.getContactName();
-                            Contact contact = contactsForModel.get(contactName);
-                            String reminderTime = contact.getContactSettings().getReminderTime();
+                            Contact realContact = null;
+                            for (Contact contact : contactsForModel.values()) {
+                                if (contact.getContactInfo().contains(contactName)) {
+                                    realContact = contact;
+                                }
+                            }
+
+                            if(realContact == null)
+                            {
+                                ContactSettings defaultSettings = SettingsModel.getInstance().getAppSettings(appName).getDefaultContactSettings();
+                                realContact = new Contact(defaultSettings, contactName, null);
+                            }
+                            String reminderTime = realContact.getContactSettings().getReminderTime();
                             Date remindTime = new Date(message.getTimeReceived().getTime() + stringToMilSeconds(reminderTime));
                             //update message
-                            message.updateData(contact, remindTime);
+                            message.updateData(realContact, remindTime);
                             messagesToAdd.add(message);
                         }
                     }
