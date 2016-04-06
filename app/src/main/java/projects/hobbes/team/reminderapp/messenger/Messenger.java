@@ -62,9 +62,9 @@ public class Messenger implements API
 
                         StringBuilder phoneNumber = new StringBuilder("");
 
-                        for(int i = 0; i < name.length(); i++)
+                        for(int i = 0; i < currPhoneNum.length(); i++)
                         {
-                            char currChar = name.charAt(i);
+                            char currChar = currPhoneNum.charAt(i);
 
                             if(Character.isDigit(currChar))
                             {
