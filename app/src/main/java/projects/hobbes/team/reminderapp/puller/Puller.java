@@ -1,7 +1,6 @@
 package projects.hobbes.team.reminderapp.puller;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -12,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import projects.hobbes.team.reminderapp.MainActivity;
+import projects.hobbes.team.reminderapp.messenger.Messenger;
 import projects.hobbes.team.reminderapp.model.AppSettings;
 import projects.hobbes.team.reminderapp.model.Contact;
 import projects.hobbes.team.reminderapp.model.Reminder;
@@ -22,9 +22,11 @@ public class Puller
 {
     private static final String TAG = "PullerLog";
     private static Thread puller;
+    private static Context context;
 
-    public static void start()
+    public static void start(Context context)
     {
+        Puller.context = context;
         if(puller == null)
         {
             puller = new PullerThread();
@@ -120,7 +122,7 @@ public class Puller
                     API api = app.getAPI();
 
                     Map<String, Contact> contactsForModel = new HashMap<>();
-                    List<Contact> contacts = api.getContacts();
+                    List<Contact> contacts = api.getContacts(Puller.context);
                     for(Contact person : contacts) {
                         contactsForModel.put(person.getName(), person);
                     }
@@ -128,7 +130,7 @@ public class Puller
 
                     //merge lists
                     List<Reminder> pendingMessagesInModel = RemindersModel.getInstance().getRemindersList(appName);
-                    List<Reminder> messagesFromAPI = api.getMessages();
+                    List<Reminder> messagesFromAPI = api.getMessages(Puller.context);
 
                     List<Reminder> messagesToAdd = new ArrayList<>();
                     for(Reminder message : messagesFromAPI)
@@ -197,15 +199,15 @@ public class Puller
 
     public static void populateFakeData()
     {
-        API fakeMessenger = new FakeMessenger();
-        SettingsModel.getInstance().addApp("Messenger", new AppSettings(fakeMessenger));
+        API messenger = new Messenger();
+        SettingsModel.getInstance().addApp("Messenger", new AppSettings(messenger));
         RemindersModel.getInstance().addApp("Messenger", new ArrayList<Reminder>());
 
-        SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("John Doe", new Contact("John Doe"));
-        SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("John Smith", new Contact("John Smith"));
-        SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("Jane Doe", new Contact("Jane Doe"));
-        SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("Bosco", new Contact("Bosco"));
-        SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("James Bond", new Contact("James Bond"));
-        SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("Zoolander", new Contact("Zoolander"));
+//        SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("John Doe", new Contact("John Doe"));
+//        SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("John Smith", new Contact("John Smith"));
+//        SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("Jane Doe", new Contact("Jane Doe"));
+//        SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("Bosco", new Contact("Bosco"));
+//        SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("James Bond", new Contact("James Bond"));
+//        SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("Zoolander", new Contact("Zoolander"));
     }
 }

@@ -64,12 +64,10 @@ public class MainActivity extends AppCompatActivity
 
         Iconify.with(new FontAwesomeModule());
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
         Puller.populateFakeData();
-        Puller.start();
+        Puller.start(this);
 
         recyclerView = (RecyclerView) findViewById(R.id.app_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

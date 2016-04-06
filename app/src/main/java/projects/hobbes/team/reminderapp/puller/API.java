@@ -8,8 +8,8 @@ import projects.hobbes.team.reminderapp.model.Reminder;
 
 public interface API
 {
-    List<Reminder> getMessages();
-    List<Contact> getContacts();
+    List<Reminder> getMessages(Context context);
+    List<Contact> getContacts(Context context);
 
     void launchActivity(Contact contact, Context context);
 }
