@@ -14,6 +14,7 @@ import projects.hobbes.team.reminderapp.MainActivity;
 import projects.hobbes.team.reminderapp.messenger.Messenger;
 import projects.hobbes.team.reminderapp.model.AppSettings;
 import projects.hobbes.team.reminderapp.model.Contact;
+import projects.hobbes.team.reminderapp.model.ContactSettings;
 import projects.hobbes.team.reminderapp.model.Reminder;
 import projects.hobbes.team.reminderapp.model.RemindersModel;
 import projects.hobbes.team.reminderapp.model.SettingsModel;
@@ -141,7 +142,16 @@ public class Puller
                         {
                             message = pendingMessagesInModel.get(index);
                             String contactName = message.getContactName();
-                            Contact contact = contactsForModel.get(contactName);
+                            Contact contact = null;
+                            if(contactsForModel.containsKey(contactName))
+                            {
+                                contact = contactsForModel.get(contactName);
+                            }
+                            else
+                            {
+                                ContactSettings defaultSettings = SettingsModel.getInstance().getAppSettings(appName).getDefaultContactSettings();
+                                contact = new Contact(defaultSettings, contactName, null);
+                            }
                             //update message
                             message.updateData(contact, null);
                         }
