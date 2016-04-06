@@ -26,6 +26,7 @@ public class Messenger implements API
     public static final String ADDRESS = "address";
     public static final String PERSON = "person";
     public static final String DATE = "date";
+    public static final String DATE_SENT = "date_sent";
     public static final String READ = "read";
     public static final String STATUS = "status";
     public static final String TYPE = "type";
@@ -115,31 +116,74 @@ public class Messenger implements API
         List<Reminder> smsList = new ArrayList<Reminder>();
 
         ContentResolver contentResolver = context.getContentResolver();
-        Cursor cursor = contentResolver.query(Uri.parse("content://sms/inbox"), null, null, null, null);
+        Cursor inboxCursor = contentResolver.query(Uri.parse("content://sms/inbox"), null, null, null, null);
+        Cursor outboxCursor = contentResolver.query(Uri.parse("content://sms/outbox"), null, null, null, null);
 
-        int indexBody = cursor.getColumnIndex(BODY);
-        int indexRead = cursor.getColumnIndex(READ);
-        int indexDate = cursor.getColumnIndex(DATE);
-        int indexAddr = cursor.getColumnIndex(ADDRESS);
+        //Inbox Column Indexes
+        int indexBody = inboxCursor.getColumnIndex(BODY);
+        int indexRead = inboxCursor.getColumnIndex(READ);
+        int indexSeen = inboxCursor.getColumnIndex(SEEN);
+        int indexDate = inboxCursor.getColumnIndex(DATE);
+        int indexAddr = inboxCursor.getColumnIndex(ADDRESS);
 
-        if ( indexBody < 0 || !cursor.moveToFirst() ) return null;
+        //Outbox Column Indexes
+        int indexDateSent = outboxCursor.getColumnIndex(DATE_SENT);
+        int indexSentAddress = outboxCursor.getColumnIndex(ADDRESS);
+
+        if ( indexBody < 0 || !inboxCursor.moveToFirst() ) return null;
 
         do
         {
-            String read = cursor.getString(indexRead);
-            String time = cursor.getString(indexDate);
+            String read = inboxCursor.getString(indexRead);
+            String seen = inboxCursor.getString(indexSeen);
+            long receiveDate = inboxCursor.getLong(indexDate);
+            String address = inboxCursor.getString(indexAddr);
+            boolean isUnrepliedMessage = false;
 
-            //Add only unread messages
-            if(read.equals("0"))
+            if(read.equals("0") || seen.equals("0"))
             {
-                Date date = new Date(Long.parseLong(time));
-                String message = cursor.getString(indexBody);
-                Reminder newReminder = new Reminder(cursor.getString(indexAddr), "Messenger", message, date);
+                isUnrepliedMessage = true;
+            }
+            else
+            {
+                do
+                {
+                    long sentDate = outboxCursor.getLong(indexDateSent);
+                    String sentAddress = outboxCursor.getString(indexSentAddress);
+
+                    //if current sent message was sent after receiving message on the inbox
+                    if(sentDate > receiveDate)
+                    {
+                        //if they have the same number it means message has been already been replied to,
+                        //do not include it
+                        if(sentAddress.equals(address))
+                        {
+                            break;
+                        }
+                    }
+                    //if the current sent message was sent before receiving message on inbox
+                    //we know for sure it has not been replied to since we didn't get a match on
+                    //the previous if
+                    else
+                    {
+                        isUnrepliedMessage = true;
+                        break;
+                    }
+                }
+                while(outboxCursor.moveToNext());
+            }
+
+            //Add only messages that have not been replied to
+            if(isUnrepliedMessage)
+            {
+                Date date = new Date(receiveDate);
+                String message = inboxCursor.getString(indexBody);
+                Reminder newReminder = new Reminder(address, "Messenger", message, date);
 
                 smsList.add(newReminder);
             }
         }
-        while( cursor.moveToNext() );
+        while( inboxCursor.moveToNext() );
 
         //todo also, if possible we only want the messages that we haven't responded to.
 
