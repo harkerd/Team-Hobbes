@@ -24,15 +24,18 @@ public class ContactsListAdapter extends RecyclerView.Adapter<ContactsListAdapte
 {
     private Context context;
     private List<Contact> contacts;
+    private String appName;
 
-    public ContactsListAdapter(Context context, Map<String, Contact> contactMap)
+    public ContactsListAdapter(Context context, Map<String, Contact> contactMap, String appName)
     {
         this.context = context;
         this.contacts = new ArrayList<>();
+        this.appName = appName;
         for(String contactName : contactMap.keySet())
         {
             contacts.add(contactMap.get(contactName));
         }
+
     }
 
 
@@ -71,6 +74,7 @@ public class ContactsListAdapter extends RecyclerView.Adapter<ContactsListAdapte
                 {
                     Intent intent = new Intent(context, SettingsActivity.class);
                     intent.putExtra("contactName", contact.getName());
+                    intent.putExtra("appName", appName);
                     context.startActivity(intent);
                 }
             });
