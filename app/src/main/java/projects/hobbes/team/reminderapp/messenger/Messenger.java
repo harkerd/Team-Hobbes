@@ -17,6 +17,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Created by Daniel on 3/31/2016.
@@ -24,14 +26,10 @@ import java.util.List;
 public class Messenger implements API
 {
     public static final String ADDRESS = "address";
-    public static final String PERSON = "person";
     public static final String DATE = "date";
     public static final String DATE_SENT = "date_sent";
     public static final String READ = "read";
-    public static final String STATUS = "status";
-    public static final String TYPE = "type";
     public static final String BODY = "body";
-    public static final String SEEN = "seen";
 
     public List<Contact> getSmsContacts(Context context)
     {
@@ -114,10 +112,11 @@ public class Messenger implements API
     public List<Reminder> getMessages(Context context)
     {
         List<Reminder> smsList = new ArrayList<Reminder>();
+        Set<String> alreadyGotMostRecent = new TreeSet<String>();
 
         ContentResolver contentResolver = context.getContentResolver();
         Cursor inboxCursor = contentResolver.query(Uri.parse("content://sms/inbox"), null, null, null, null);
-        Cursor outboxCursor = contentResolver.query(Uri.parse("content://sms/outbox"), null, null, null, null);
+        Cursor sentCursor = contentResolver.query(Uri.parse("content://sms/sent"), null, null, null, null);
 
         //Inbox Column Indexes
         int indexBody = inboxCursor.getColumnIndex(BODY);
@@ -126,49 +125,64 @@ public class Messenger implements API
         int indexAddr = inboxCursor.getColumnIndex(ADDRESS);
 
         //Outbox Column Indexes
-        int indexDateSent = outboxCursor.getColumnIndex(DATE_SENT);
-        int indexSentAddress = outboxCursor.getColumnIndex(ADDRESS);
+        int indexDateSent = sentCursor.getColumnIndex(DATE_SENT);
 
-        if ( indexBody < 0 || !inboxCursor.moveToFirst() ) return null;
+        if ( indexBody < 0 || !inboxCursor.moveToFirst() ) return smsList;
 
         do
         {
+            String address = inboxCursor.getString(indexAddr);
+
+            if(alreadyGotMostRecent.contains(address))
+            {
+                continue;
+            }
+
             String read = inboxCursor.getString(indexRead);
             long receiveDate = inboxCursor.getLong(indexDate);
-            String address = inboxCursor.getString(indexAddr);
             boolean isUnrepliedMessage = false;
 
             if(read.equals("0"))
             {
+                alreadyGotMostRecent.add(address);
                 isUnrepliedMessage = true;
             }
             else
             {
-                do
+                if(sentCursor.moveToFirst())
                 {
-                    long sentDate = outboxCursor.getLong(indexDateSent);
-                    String sentAddress = outboxCursor.getString(indexSentAddress);
-
-                    //if current sent message was sent after receiving message on the inbox
-                    if(sentDate > receiveDate)
+                    do
                     {
-                        //if they have the same number it means message has been already been replied to,
-                        //do not include it
-                        if(sentAddress.equals(address))
+                        long sentDate = sentCursor.getLong(indexDate);
+                        String sentAddress = sentCursor.getString(indexAddr);
+
+                        //if current sent message was sent after receiving message on the inbox
+                        if(sentDate > receiveDate)
                         {
+                            //if they have the same number it means message has been already been replied to,
+                            //do not include it
+                            if(sentAddress.equals(address))
+                            {
+                                break;
+                            }
+                        }
+                        //if the current sent message was sent before receiving message on inbox
+                        //we know for sure it has not been replied to since we didn't get a match on
+                        //the previous if
+                        else if(sentDate < receiveDate)
+                        {
+                            alreadyGotMostRecent.add(address);
+                            isUnrepliedMessage = true;
                             break;
                         }
                     }
-                    //if the current sent message was sent before receiving message on inbox
-                    //we know for sure it has not been replied to since we didn't get a match on
-                    //the previous if
-                    else
-                    {
-                        isUnrepliedMessage = true;
-                        break;
-                    }
+                    while(sentCursor.moveToNext());
                 }
-                while(outboxCursor.moveToNext());
+                else
+                {
+                    isUnrepliedMessage = true;
+                    break;
+                }
             }
 
             //Add only messages that have not been replied to
