@@ -122,7 +122,6 @@ public class Messenger implements API
         //Inbox Column Indexes
         int indexBody = inboxCursor.getColumnIndex(BODY);
         int indexRead = inboxCursor.getColumnIndex(READ);
-        int indexSeen = inboxCursor.getColumnIndex(SEEN);
         int indexDate = inboxCursor.getColumnIndex(DATE);
         int indexAddr = inboxCursor.getColumnIndex(ADDRESS);
 
@@ -135,12 +134,11 @@ public class Messenger implements API
         do
         {
             String read = inboxCursor.getString(indexRead);
-            String seen = inboxCursor.getString(indexSeen);
             long receiveDate = inboxCursor.getLong(indexDate);
             String address = inboxCursor.getString(indexAddr);
             boolean isUnrepliedMessage = false;
 
-            if(read.equals("0") || seen.equals("0"))
+            if(read.equals("0"))
             {
                 isUnrepliedMessage = true;
             }
