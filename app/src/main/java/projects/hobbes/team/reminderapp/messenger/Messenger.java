@@ -29,12 +29,6 @@ public class Messenger implements API
     public static final String DATE = "date";
     public static final String READ = "read";
     public static final String BODY = "body";
-    private final int millisecondsInSecond = 1000;
-    private final int secondsInHour = 3600;
-    private final int hoursInDay = 24;
-    private final int daysInWeek = 7;
-    private final int weeksBack = 4;
-    private final long weeksBackMilliseconds = weeksBack * daysInWeek * hoursInDay * secondsInHour * millisecondsInSecond;
 
     public List<Contact> getSmsContacts(Context context)
     {
@@ -129,6 +123,9 @@ public class Messenger implements API
         int indexDate = inboxCursor.getColumnIndex(DATE);
         int indexAddr = inboxCursor.getColumnIndex(ADDRESS);
 
+        long weeksBackMilliseconds = new Long("2419200000");
+        long millisecondsBack = new Date().getTime() - weeksBackMilliseconds;
+
         if ( indexBody < 0 || !inboxCursor.moveToFirst() ) return smsList;
 
         do
@@ -136,7 +133,7 @@ public class Messenger implements API
             long receiveDate = inboxCursor.getLong(indexDate);
 
             //We only want messages up to 4 weeks old
-            if(receiveDate > new Date().getTime() - weeksBackMilliseconds)
+            if(receiveDate < millisecondsBack)
                 break;
 
             String address = inboxCursor.getString(indexAddr);
