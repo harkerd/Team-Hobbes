@@ -205,9 +205,7 @@ public class Messenger implements API
             }
         }
         while( inboxCursor.moveToNext() );
-
-        //todo also, if possible we only want the messages that we haven't responded to.
-
+        
         return smsList;
     }
 
