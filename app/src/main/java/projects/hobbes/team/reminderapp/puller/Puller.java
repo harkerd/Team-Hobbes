@@ -116,6 +116,7 @@ public class Puller
         private void updateReminders()
         {
             Map<String,List<Reminder>> messagesToAddToApps = new HashMap<>();
+            Map<String,List<Reminder>> messagesToRemoveFromApps = new HashMap<>();
             for(String appName : SettingsModel.getInstance().getAppNames())
             {
                 AppSettings app = SettingsModel.getInstance().getAppSettings(appName);
@@ -135,6 +136,7 @@ public class Puller
                     List<Reminder> messagesFromAPI = api.getMessages(Puller.context);
 
                     List<Reminder> messagesToAdd = new ArrayList<>();
+                    List<Reminder> newMessages = new ArrayList<>();
                     for(Reminder message : messagesFromAPI)
                     {
                         //find the index if it is in the model already
@@ -146,6 +148,7 @@ public class Puller
                             Contact contact = message.getContact();
                             //update message
                             message.updateData(contact, null);
+                            newMessages.add(message);
                         }
                         else //if it NOT in the model already
                         {
@@ -168,21 +171,30 @@ public class Puller
                             //update message
                             message.updateData(realContact, remindTime);
                             messagesToAdd.add(message);
+                            newMessages.add(message);
                         }
                     }
 
-                    //pendingMessagesInModel.addAll(messagesToAdd);
                     messagesToAddToApps.put(appName, messagesToAdd);
+                    List<Reminder> messagesToRemove = new ArrayList<>();
                     for(Reminder reminder : pendingMessagesInModel)
                     {
-                        if(reminder.isOverdue())
+                        //if message has been responded to, it will no longer be in the pulled in messages, but will still
+                        //be in the message in the app. Need to remove those
+                        if (indexOfReminder(newMessages, reminder) == -1) {
+                            messagesToRemove.add(reminder);
+                        }
+                        else if(reminder.isOverdue())
                         {
                             MainActivity.sendNotification(reminder);
                         }
                     }
+                    if (messagesToRemove.size() > 0) {
+                        messagesToRemoveFromApps.put(appName, messagesToRemove);
+                    }
                 }
             }
-            MainActivity.refreshList(messagesToAddToApps);
+            MainActivity.refreshList(messagesToAddToApps, messagesToRemoveFromApps);
         }
 
         private int indexOfReminder(List<Reminder> reminderList, Reminder reminder) {

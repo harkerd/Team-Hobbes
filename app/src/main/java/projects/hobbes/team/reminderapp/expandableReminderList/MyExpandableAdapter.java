@@ -24,17 +24,14 @@ import com.joanzapata.iconify.fonts.FontAwesomeIcons;
 
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import projects.hobbes.team.reminderapp.AppSettingsActivity;
 import projects.hobbes.team.reminderapp.MainActivity;
 import projects.hobbes.team.reminderapp.R;
 import projects.hobbes.team.reminderapp.SettingsActivity;
-import projects.hobbes.team.reminderapp.model.Contact;
 import projects.hobbes.team.reminderapp.model.Reminder;
 import projects.hobbes.team.reminderapp.model.SettingsModel;
 import projects.hobbes.team.reminderapp.puller.Puller;
@@ -164,7 +161,6 @@ public class MyExpandableAdapter extends ExpandableRecyclerAdapter<ParentViewHol
                     params.setMargins(5, 5, 5, 5);
                     params.weight = 1;
                     replyButton.setLayoutParams(params);
-                    //replyButton.setGravity(1);
                     replyButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

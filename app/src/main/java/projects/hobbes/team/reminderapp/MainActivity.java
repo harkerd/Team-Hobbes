@@ -82,42 +82,59 @@ public class MainActivity extends AppCompatActivity
         return parentListItems;
     }
 
-    public static void refreshList(final Map<String,List<Reminder>> addedMessages) {
+    public static void refreshList(final Map<String,List<Reminder>> addedMessages, final Map<String,List<Reminder>> removedMessages) {
         if (context == null || !((MainActivity)context).hasWindowFocus()) {
             return;
         }
         if (recyclerView != null && expandableAdapter != null) {
-//todo make it so that buttons aren't spuriosly acting up when this updates them
             ((MainActivity)context).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     int size = RemindersModel.getInstance().getRemindersList("Messenger").size();
-                    Log.d(TAG, "notifying data set changed. size: " + size);
-//                    refreshReminders();
-                    if (expandableAdapter.getItemCount() == 0) {
-                        expandableAdapter.notifyDataSetChanged();
+                    Log.d(TAG, "notifying data set changed. current size: " + size);
+                    int addSize = 0;
+                    for (String key : addedMessages.keySet()) {
+                        addSize += addedMessages.get(key).size();
                     }
-                    else if (addedMessages.size() > 0) {
+                    Log.d(TAG, "notifying data set changed. add size: " + addSize);
+                    int removeSize = 0;
+                    for (String key : removedMessages.keySet()) {
+                        removeSize += removedMessages.get(key).size();
+                    }
+                    Log.d(TAG, "notifying data set changed. remove size: " + removeSize);
+                    if (addedMessages.size() > 0) {
                         for (String app : addedMessages.keySet()) {
                             for (ParentListItem parentListItem : expandableAdapter.getParentItemList()) {
                                 if (parentListItem instanceof MyParentObject) {
                                     String appName = ((MyParentObject) parentListItem).getTitle();
                                     if (app.equals(appName)) {
-                                        int children = parentListItem.getChildItemList().size();
-                                        for (int i = 0; i < addedMessages.get(app).size(); i++) {
-                                            RemindersModel.getInstance().getRemindersList("Messenger").add(addedMessages.get(app).get(i));
-                                            expandableAdapter.notifyChildItemInserted(0, children + i);
+                                        RemindersModel.sort(addedMessages.get(app));
+                                        for (int i = addedMessages.get(app).size() -1; i >= 0 ; i--) {
+                                            RemindersModel.getInstance().getRemindersList(app).add(0,addedMessages.get(app).get(i));
+                                            expandableAdapter.notifyChildItemInserted(0, 0);
                                         }
                                     }
                                 }
                             }
                         }
-
+                    }
+                    if (removedMessages.size() > 0) {
+                        for (String app : removedMessages.keySet()) {
+                            for (ParentListItem parentListItem : expandableAdapter.getParentItemList()) {
+                                if (parentListItem instanceof MyParentObject) {
+                                    String appName = ((MyParentObject) parentListItem).getTitle();
+                                    if (app.equals(appName)) {
+                                        for (int i = 0; i < removedMessages.get(app).size(); i++) {
+                                            int index = parentListItem.getChildItemList().indexOf(removedMessages.get(app).get(i));
+                                            RemindersModel.getInstance().getRemindersList(app).remove(removedMessages.get(app).get(i));
+                                            expandableAdapter.notifyChildItemRemoved(0, index);
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                     expandableAdapter.notifyDataSetChanged();
-                    //todo: this doesn't need to be fixed for our testing, but still
-                    //todo-cont: figure out how to make new things appear and old things not disappear if
-                    //todo-cont: an app is expanded and a new reminder comes in
                 }
             });
         }
