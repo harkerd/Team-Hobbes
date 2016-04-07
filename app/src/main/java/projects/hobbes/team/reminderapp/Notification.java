@@ -29,6 +29,11 @@ public class Notification {
 //        rv.setString(R.id.Name, "setText", "TestName");
         rv.setTextViewText(R.id.Name, reminder.getContactName());
         rv.setTextViewText(R.id.Content, reminder.getMessage());
+        //reply should open the app
+        //Snooze should snooze the notification (reminder)
+        //ignore should turn off reminders for this notification.
+//        Intent ignoreIntent = new Intent();
+//        rv.setOnClickPendingIntent(R.id.Ignore, );
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
