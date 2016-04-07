@@ -1,14 +1,10 @@
 package projects.hobbes.team.reminderapp;
 
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
-import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,8 +24,6 @@ import com.joanzapata.iconify.Iconify;
 import com.joanzapata.iconify.fonts.FontAwesomeModule;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -88,7 +82,7 @@ public class MainActivity extends AppCompatActivity
         return parentListItems;
     }
 
-    public static void refreshList() {
+    public static void refreshList(final Map<String,List<Reminder>> addedMessages) {
         if (context == null || !((MainActivity)context).hasWindowFocus()) {
             return;
         }
@@ -100,6 +94,26 @@ public class MainActivity extends AppCompatActivity
                     int size = RemindersModel.getInstance().getRemindersList("Messenger").size();
                     Log.d(TAG, "notifying data set changed. size: " + size);
 //                    refreshReminders();
+                    if (expandableAdapter.getItemCount() == 0) {
+                        expandableAdapter.notifyDataSetChanged();
+                    }
+                    else if (addedMessages.size() > 0) {
+                        for (String app : addedMessages.keySet()) {
+                            for (ParentListItem parentListItem : expandableAdapter.getParentItemList()) {
+                                if (parentListItem instanceof MyParentObject) {
+                                    String appName = ((MyParentObject) parentListItem).getTitle();
+                                    if (app.equals(appName)) {
+                                        int children = parentListItem.getChildItemList().size();
+                                        for (int i = 0; i < addedMessages.get(app).size(); i++) {
+                                            RemindersModel.getInstance().getRemindersList("Messenger").add(addedMessages.get(app).get(i));
+                                            expandableAdapter.notifyChildItemInserted(0, children + i);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                    }
                     expandableAdapter.notifyDataSetChanged();
                     //todo: this doesn't need to be fixed for our testing, but still
                     //todo-cont: figure out how to make new things appear and old things not disappear if

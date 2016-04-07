@@ -2,6 +2,7 @@ package projects.hobbes.team.reminderapp.model;
 
 import android.media.Image;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Contact {
@@ -27,6 +28,9 @@ public class Contact {
         this.contactSettings = contactSettings;
         this.name = name;
         this.contactInfo = contactInfo;
+        if (contactInfo == null) {
+            this.contactInfo = new ArrayList<>();
+        }
     }
 
     public Image getImage()

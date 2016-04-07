@@ -12,7 +12,6 @@ public class Reminder {
     private String app;
     private String message;
     private Date timeReceived;
-    private int timeSinceReceived;
 
     //From Puller
     private Contact contact;
@@ -63,6 +62,10 @@ public class Reminder {
         this.message = message;
     }
 
+    public void setContactName(String contactName) {
+        this.contactName = contactName;
+    }
+
     public String getContactName() {
         return contactName;
     }
@@ -82,15 +85,8 @@ public class Reminder {
         return (int)minutes;
     }
 
-    public void setTimeSinceReceived(int timeSinceReceived) {
-        this.timeSinceReceived = timeSinceReceived;
-    }
-
     public boolean isOverdue() {
-        if (new Date().after(remindTime)) {
-            return true;
-        }
-        return isOverdue;
+        return new Date().after(remindTime);
     }
 
     public boolean isIgnored() {
@@ -109,9 +105,9 @@ public class Reminder {
         else
         {
             Reminder r = (Reminder) o;
-            return r.app == this.app &&
-                    r.message == this.message &&
-                    r.contactName == this.contactName &&
+            return r.app.equals(this.app) &&
+                    r.message.equals(this.message) &&
+                    r.contactName.equals(this.contactName) &&
                     r.timeReceived.equals(this.timeReceived);
         }
     }

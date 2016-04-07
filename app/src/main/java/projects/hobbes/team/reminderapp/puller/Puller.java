@@ -115,6 +115,7 @@ public class Puller
 
         private void updateReminders()
         {
+            Map<String,List<Reminder>> messagesToAddToApps = new HashMap<>();
             for(String appName : SettingsModel.getInstance().getAppNames())
             {
                 AppSettings app = SettingsModel.getInstance().getAppSettings(appName);
@@ -137,7 +138,7 @@ public class Puller
                     for(Reminder message : messagesFromAPI)
                     {
                         //find the index if it is in the model already
-                        int index = pendingMessagesInModel.indexOf(message);
+                        int index = indexOfReminder(pendingMessagesInModel, message);
                         if(index != -1) //if it is IS in the model already
                         {
                             message = pendingMessagesInModel.get(index);
@@ -153,6 +154,7 @@ public class Puller
                             for (Contact contact : contactsForModel.values()) {
                                 if (contact.getContactInfo().contains(contactName)) {
                                     realContact = contact;
+                                    message.setContactName(realContact.getName());
                                 }
                             }
 
@@ -169,7 +171,8 @@ public class Puller
                         }
                     }
 
-                    pendingMessagesInModel.addAll(messagesToAdd);
+                    //pendingMessagesInModel.addAll(messagesToAdd);
+                    messagesToAddToApps.put(appName, messagesToAdd);
                     for(Reminder reminder : pendingMessagesInModel)
                     {
                         if(reminder.isOverdue())
@@ -179,7 +182,22 @@ public class Puller
                     }
                 }
             }
-            MainActivity.refreshList();
+            MainActivity.refreshList(messagesToAddToApps);
+        }
+
+        private int indexOfReminder(List<Reminder> reminderList, Reminder reminder) {
+            for (int i = 0; i < reminderList.size(); i++) {
+                Reminder r = reminderList.get(i);
+                if (r.getContactName().equals(reminder.getContactName())
+                        || r.getContact().getContactInfo().contains(reminder.getContactName())) {
+                    if (r.getMessage().equals(reminder.getMessage())) {
+                        if (r.getTimeReceived().equals(reminder.getTimeReceived())) {
+                            return i;
+                        }
+                    }
+                }
+            }
+            return -1;
         }
 
 
