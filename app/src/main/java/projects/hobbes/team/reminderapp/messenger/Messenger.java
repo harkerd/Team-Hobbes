@@ -17,12 +17,19 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Created by Daniel on 3/31/2016.
  */
 public class Messenger implements API
 {
+    public static final String ADDRESS = "address";
+    public static final String DATE = "date";
+    public static final String READ = "read";
+    public static final String BODY = "body";
+
     public List<Contact> getSmsContacts(Context context)
     {
         List<Contact> contactsList = new ArrayList<Contact>();
@@ -49,7 +56,21 @@ public class Messenger implements API
 
                     while (pCur.moveToNext())
                     {
-                        phoneNumbers.add(pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+                        String currPhoneNum = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+
+                        StringBuilder phoneNumber = new StringBuilder("");
+
+                        for(int i = 0; i < currPhoneNum.length(); i++)
+                        {
+                            char currChar = currPhoneNum.charAt(i);
+
+                            if(Character.isDigit(currChar))
+                            {
+                                phoneNumber.append(currChar);
+                            }
+                        }
+
+                        phoneNumbers.add(phoneNumber.toString());
                     }
                     pCur.close();
 
@@ -85,66 +106,106 @@ public class Messenger implements API
         }
     }
 
-    public String decryptObject(String encryptedMessage)
-    {
-        try
-        {
-            return SmsSecurityHandler.decrypt( new String(SmsReceiver.PASSWORD), encryptedMessage );
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
     //Returns empty list if no messages, otherwise returns a list of all unread messages
     @Override
     public List<Reminder> getMessages(Context context)
     {
         List<Reminder> smsList = new ArrayList<Reminder>();
+        Set<String> alreadyGotMostRecent = new TreeSet<String>();
 
         ContentResolver contentResolver = context.getContentResolver();
-        Cursor cursor = contentResolver.query(Uri.parse("content://sms/inbox"), null, null, null, null);
+        Cursor inboxCursor = contentResolver.query(Uri.parse("content://sms/inbox"), null, null, null, null);
+        Cursor sentCursor = contentResolver.query(Uri.parse("content://sms/sent"), null, null, null, null);
 
-        int indexBody = cursor.getColumnIndex(SmsReceiver.BODY);
-        int indexRead = cursor.getColumnIndex(SmsReceiver.READ);
-        int indexDate = cursor.getColumnIndex(SmsReceiver.DATE);
-        int indexID = cursor.getColumnIndex(SmsReceiver.PERSON);
-        int indexAddr = cursor.getColumnIndex(SmsReceiver.ADDRESS);
+        //SMS Column Indexes
+        int indexBody = inboxCursor.getColumnIndex(BODY);
+        int indexRead = inboxCursor.getColumnIndex(READ);
+        int indexDate = inboxCursor.getColumnIndex(DATE);
+        int indexAddr = inboxCursor.getColumnIndex(ADDRESS);
 
-        if ( indexBody < 0 || !cursor.moveToFirst() ) return null;
+        long weeksBackMilliseconds = new Long("2419200000");
+        long millisecondsBack = new Date().getTime() - weeksBackMilliseconds;
+
+        if ( indexBody < 0 || !inboxCursor.moveToFirst() ) return smsList;
 
         do
         {
-            String read = cursor.getString(indexRead);
+            long receiveDate = inboxCursor.getLong(indexDate);
 
-            //Add only unread messages
+            //We only want messages up to 4 weeks old
+            if(receiveDate < millisecondsBack)
+                break;
+
+            String address = inboxCursor.getString(indexAddr);
+
+            //if it is not a proper phone number we probably cannot even or
+            //don't even want to reply to it (ie. message for 2 factor authentication)
+            if(address.length() < 10)
+                continue;
+
+            if(alreadyGotMostRecent.contains(address))
+            {
+                continue;
+            }
+
+            String read = inboxCursor.getString(indexRead);
+            boolean isUnrepliedMessage = false;
+
             if(read.equals("0"))
             {
-                Date date = new Date();
-                date.setTime(date.getTime());
-                String message = decryptObject(cursor.getString(indexBody));
+                alreadyGotMostRecent.add(address);
+                isUnrepliedMessage = true;
+            }
+            else
+            {
+                if(sentCursor.moveToFirst())
+                {
+                    do
+                    {
+                        long sentDate = sentCursor.getLong(indexDate);
+                        String sentAddress = sentCursor.getString(indexAddr);
 
-                Reminder newReminder = new Reminder();
-                newReminder.setApp("Messenger");
-                newReminder.setContact(new Contact(cursor.getString(indexAddr)));
-                newReminder.setIsOverdue(false);
-                newReminder.setMessage(message);
-                newReminder.setTimeReceived(date);
-                newReminder.setTimeSinceReceived(newReminder.getTimeSinceReceived());
+                        //if current sent message was sent after receiving message on the inbox
+                        if(sentDate > receiveDate)
+                        {
+                            //if they have the same number it means message has been already been replied to,
+                            //do not include it
+                            if(sentAddress.equals(address))
+                            {
+                                break;
+                            }
+                        }
+                        //if the current sent message was sent before receiving message on inbox
+                        //we know for sure it has not been replied to since we didn't get a match on
+                        //the previous if
+                        else if(sentDate < receiveDate)
+                        {
+                            alreadyGotMostRecent.add(address);
+                            isUnrepliedMessage = true;
+                            break;
+                        }
+                    }
+                    while(sentCursor.moveToNext());
+                }
+                else
+                {
+                    isUnrepliedMessage = true;
+                    break;
+                }
+            }
+
+            //Add only messages that have not been replied to
+            if(isUnrepliedMessage)
+            {
+                Date date = new Date(receiveDate);
+                String message = inboxCursor.getString(indexBody);
+                Reminder newReminder = new Reminder(address, "Messenger", message, date);
 
                 smsList.add(newReminder);
             }
         }
-        while( cursor.moveToNext() );
-
-        //todo- the message bodies are all null when I run this at 9:24 pm thursday = probably because of the encryption thing...
-        //todo- we only want the most recent message from each person. this list has all the messages. This means if the same person
-        //todo- sent more than one message, that person is in there more than once
-        //todo also, if possible we only want the messages that we haven't responded to. => don't think this is possible, best I can do right now is to get unread messages
-
+        while( inboxCursor.moveToNext() );
+        
         return smsList;
     }
 
@@ -154,7 +215,8 @@ public class Messenger implements API
     }
 
     @Override
-    public void launchActivity(Contact contact, Context context) {
+    public void launchActivity(Contact contact, Context context)
+    {
         //todo this will launch the actual Messenger app, not needed for user testing
         Log.d("Messenger", "launching activity");
         Toast.makeText(context, "This will actually launch the Messenger app in the real thing", Toast.LENGTH_SHORT).show();

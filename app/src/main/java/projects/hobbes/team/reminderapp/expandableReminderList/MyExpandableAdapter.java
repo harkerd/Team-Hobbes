@@ -24,15 +24,14 @@ import com.joanzapata.iconify.fonts.FontAwesomeIcons;
 
 
 import java.util.Date;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 import projects.hobbes.team.reminderapp.AppSettingsActivity;
 import projects.hobbes.team.reminderapp.MainActivity;
 import projects.hobbes.team.reminderapp.R;
 import projects.hobbes.team.reminderapp.SettingsActivity;
-import projects.hobbes.team.reminderapp.model.Contact;
 import projects.hobbes.team.reminderapp.model.Reminder;
 import projects.hobbes.team.reminderapp.model.SettingsModel;
 import projects.hobbes.team.reminderapp.puller.Puller;
@@ -45,6 +44,8 @@ public class MyExpandableAdapter extends ExpandableRecyclerAdapter<ParentViewHol
     private Drawable settingsIcon;
     private Drawable maleIcon;
     private Drawable addAppSettingsIcon;
+    private Set<Reminder> expandedReminders = new HashSet<>();
+
 
     public MyExpandableAdapter(Context context, List<ParentListItem> parentObjects) {
         super(parentObjects);
@@ -78,7 +79,7 @@ public class MyExpandableAdapter extends ExpandableRecyclerAdapter<ParentViewHol
 
     @Override
     public void onBindParentViewHolder(ParentViewHolder myParentViewHolder, int i, ParentListItem parentListItem) {
-        MyParentViewHolder parentViewHolder = (MyParentViewHolder) myParentViewHolder;
+        final MyParentViewHolder parentViewHolder = (MyParentViewHolder) myParentViewHolder;
         if (parentListItem instanceof MyParentObject) {
             MyParentObject parentObject = (MyParentObject) parentListItem;
             parentViewHolder.parentTitleTextView.setText(parentObject.getTitle());
@@ -94,6 +95,12 @@ public class MyExpandableAdapter extends ExpandableRecyclerAdapter<ParentViewHol
                 public void onClick(View v) {
                     Intent intent = new Intent(context, AppSettingsActivity.class);
                     context.startActivity(intent);
+                }
+            });
+            parentViewHolder.itemContainer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    parentViewHolder.onClick(v);
                 }
             });
         }
@@ -123,6 +130,7 @@ public class MyExpandableAdapter extends ExpandableRecyclerAdapter<ParentViewHol
             public void onClick(View v) {
                 Log.d("contactPic", "clicked on " + reminder.getContact().getName() + "'s contact pic");
                 Intent intent = new Intent(context, SettingsActivity.class);
+                intent.putExtra("appName", reminder.getApp());
                 intent.putExtra("contactName", reminder.getContactName());
                 context.startActivity(intent);
             }
@@ -144,7 +152,7 @@ public class MyExpandableAdapter extends ExpandableRecyclerAdapter<ParentViewHol
             @Override
             public void onClick(View v) {
                 if (reminderViewHolder.buttonsSpot.getChildCount() == 0) {
-
+                    expandedReminders.add(reminder);
                     // add buttons
                     Button replyButton = new Button(context);
                     replyButton.setText("Reply");
@@ -153,7 +161,6 @@ public class MyExpandableAdapter extends ExpandableRecyclerAdapter<ParentViewHol
                     params.setMargins(5, 5, 5, 5);
                     params.weight = 1;
                     replyButton.setLayoutParams(params);
-                    //replyButton.setGravity(1);
                     replyButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -208,9 +215,18 @@ public class MyExpandableAdapter extends ExpandableRecyclerAdapter<ParentViewHol
                 }
                 else {
                     reminderViewHolder.buttonsSpot.removeAllViews();
+                    expandedReminders.remove(reminder);
                 }
             }
         });
+
+        if (expandedReminders.contains(reminder)) {
+            reminderViewHolder.buttonsSpot.removeAllViews();
+            reminderViewHolder.item.callOnClick();
+        }
+        else {
+            reminderViewHolder.buttonsSpot.removeAllViews();
+        }
 
     }
 

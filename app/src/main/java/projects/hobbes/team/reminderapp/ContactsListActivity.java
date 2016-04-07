@@ -32,7 +32,7 @@ public class ContactsListActivity extends AppCompatActivity {
         String appName = getIntent().getStringExtra("AppName");
         AppSettings appSettings = SettingsModel.getInstance().getAppSettings(appName);
 
-        adapter = new ContactsListAdapter(this, appSettings.getContactMap());
+        adapter = new ContactsListAdapter(this, appSettings.getContactMap(), appName);
         listView.setAdapter(adapter);
     }
 

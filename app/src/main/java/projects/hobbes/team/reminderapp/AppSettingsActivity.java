@@ -8,9 +8,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.Switch;
 
 import java.util.ArrayList;
@@ -24,6 +27,7 @@ import projects.hobbes.team.reminderapp.puller.FakeMessenger;
 public class AppSettingsActivity extends AppCompatActivity {
 
     public String appName;
+    public AppSettings currentAppSettings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,25 +57,95 @@ public class AppSettingsActivity extends AppCompatActivity {
         });
 
 
+
+
+
+
         if(SettingsModel.getInstance().getAppSettings(appName) == null)
         {
             SettingsModel.getInstance().addApp(appName, new AppSettings(new FakeMessenger()));
         }
 
-        RelativeLayout contactButton = (RelativeLayout) findViewById(R.id.contactSettingsButton);
-        RelativeLayout defaultButton = (RelativeLayout) findViewById(R.id.defaultSettingsButton);
+        currentAppSettings = SettingsModel.getInstance().getAppSettings(appName);
 
-        defaultButton.setOnClickListener(new View.OnClickListener() {
+        Switch vibrateToggle = (Switch) findViewById(R.id.vibrateToggle);
+
+        vibrateToggle.setChecked(currentAppSettings.getDefaultContactSettings().getIsVibrateOn());
+        vibrateToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), SettingsActivity.class);
-                startActivity(intent);
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                currentAppSettings.getDefaultContactSettings().toggleVibrate();
             }
         });
 
-        contactButton.setOnClickListener(new View.OnClickListener() {
+
+
+        RelativeLayout contactButton = (RelativeLayout) findViewById(R.id.contactSettingsButton);
+
+        final Spinner soundSpinner = (Spinner) findViewById(R.id.soundSpinner);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> soundAdapter = ArrayAdapter.createFromResource(this,
+                R.array.sounds_array, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        soundAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to thesoundSpinner
+        soundSpinner.setAdapter(soundAdapter);
+
+        Spinner timeSpinner = (Spinner) findViewById(R.id.timesSpinner);
+        // Create an ArrayAdapter using the string array and a default timeSpinner layout
+        ArrayAdapter<CharSequence> timeAdapter = ArrayAdapter.createFromResource(this,
+                R.array.times_array, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        timeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the timeAdapter to the timeSpinner
+        timeSpinner.setAdapter(timeAdapter);
+        currentAppSettings = SettingsModel.getInstance().getAppSettings(appName);
+
+        soundSpinner.setSelection(soundAdapter.getPosition(currentAppSettings.getDefaultContactSettings().getSound()));
+        timeSpinner.setSelection(timeAdapter.getPosition(currentAppSettings.getDefaultContactSettings().getReminderTime()));
+
+
+
+
+        soundSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
+                currentAppSettings.getDefaultContactSettings().setSound(parent.getItemAtPosition(position).toString());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent)
+            {
+
+
+            }
+        });
+
+        timeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
+                currentAppSettings.getDefaultContactSettings().setReminderTime(parent.getItemAtPosition(position).toString());
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent)
+            {
+
+            }
+        });
+
+        contactButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
                 Intent intent = new Intent(v.getContext(), ContactsListActivity.class);
                 intent.putExtra("AppName", appName);
                 startActivity(intent);

@@ -1,5 +1,7 @@
 package projects.hobbes.team.reminderapp.model;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -52,5 +54,13 @@ public class RemindersModel {
                 reminder.updateData(contact, remindTime);
             }
         }
+    }
+
+    public static void sort(List<Reminder> list) {
+        Collections.sort(list, new Comparator<Reminder>() {
+            public int compare(Reminder reminder1, Reminder reminder2) {
+                return Integer.compare(reminder1.getTimeSinceReceived(), reminder2.getTimeSinceReceived());
+            }
+        });
     }
 }

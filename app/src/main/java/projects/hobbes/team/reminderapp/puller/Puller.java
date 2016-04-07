@@ -14,6 +14,7 @@ import projects.hobbes.team.reminderapp.MainActivity;
 import projects.hobbes.team.reminderapp.messenger.Messenger;
 import projects.hobbes.team.reminderapp.model.AppSettings;
 import projects.hobbes.team.reminderapp.model.Contact;
+import projects.hobbes.team.reminderapp.model.ContactSettings;
 import projects.hobbes.team.reminderapp.model.Reminder;
 import projects.hobbes.team.reminderapp.model.RemindersModel;
 import projects.hobbes.team.reminderapp.model.SettingsModel;
@@ -114,6 +115,8 @@ public class Puller
 
         private void updateReminders()
         {
+            Map<String,List<Reminder>> messagesToAddToApps = new HashMap<>();
+            Map<String,List<Reminder>> messagesToRemoveFromApps = new HashMap<>();
             for(String appName : SettingsModel.getInstance().getAppNames())
             {
                 AppSettings app = SettingsModel.getInstance().getAppSettings(appName);
@@ -133,41 +136,80 @@ public class Puller
                     List<Reminder> messagesFromAPI = api.getMessages(Puller.context);
 
                     List<Reminder> messagesToAdd = new ArrayList<>();
+                    List<Reminder> newMessages = new ArrayList<>();
                     for(Reminder message : messagesFromAPI)
                     {
                         //find the index if it is in the model already
-                        int index = pendingMessagesInModel.indexOf(message);
-                        if(index != -1) //if it is NOT in the model already
+                        int index = indexOfReminder(pendingMessagesInModel, message);
+                        if(index != -1) //if it is IS in the model already
                         {
                             message = pendingMessagesInModel.get(index);
-                            String contactName = message.getContactName();
-                            Contact contact = contactsForModel.get(contactName);
+//                            String contactName = message.getContactName();
+                            Contact contact = message.getContact();
                             //update message
                             message.updateData(contact, null);
+                            newMessages.add(message);
                         }
-                        else //if it IS in the model already
+                        else //if it NOT in the model already
                         {
                             String contactName = message.getContactName();
-                            Contact contact = contactsForModel.get(contactName);
-                            String reminderTime = contact.getContactSettings().getReminderTime();
+                            Contact realContact = null;
+                            for (Contact contact : contactsForModel.values()) {
+                                if (contact.getContactInfo().contains(contactName)) {
+                                    realContact = contact;
+                                    message.setContactName(realContact.getName());
+                                }
+                            }
+
+                            if(realContact == null)
+                            {
+                                ContactSettings defaultSettings = SettingsModel.getInstance().getAppSettings(appName).getDefaultContactSettings();
+                                realContact = new Contact(defaultSettings, contactName, null);
+                            }
+                            String reminderTime = realContact.getContactSettings().getReminderTime();
                             Date remindTime = new Date(message.getTimeReceived().getTime() + stringToMilSeconds(reminderTime));
                             //update message
-                            message.updateData(contact, remindTime);
+                            message.updateData(realContact, remindTime);
                             messagesToAdd.add(message);
+                            newMessages.add(message);
                         }
                     }
 
-                    pendingMessagesInModel.addAll(messagesToAdd);
+                    messagesToAddToApps.put(appName, messagesToAdd);
+                    List<Reminder> messagesToRemove = new ArrayList<>();
                     for(Reminder reminder : pendingMessagesInModel)
                     {
-                        if(reminder.isOverdue())
+                        //if message has been responded to, it will no longer be in the pulled in messages, but will still
+                        //be in the message in the app. Need to remove those
+                        if (indexOfReminder(newMessages, reminder) == -1) {
+                            messagesToRemove.add(reminder);
+                        }
+                        else if(reminder.isOverdue())
                         {
                             MainActivity.sendNotification(reminder);
                         }
                     }
+                    if (messagesToRemove.size() > 0) {
+                        messagesToRemoveFromApps.put(appName, messagesToRemove);
+                    }
                 }
             }
-            MainActivity.refreshList();
+            MainActivity.refreshList(messagesToAddToApps, messagesToRemoveFromApps);
+        }
+
+        private int indexOfReminder(List<Reminder> reminderList, Reminder reminder) {
+            for (int i = 0; i < reminderList.size(); i++) {
+                Reminder r = reminderList.get(i);
+                if (r.getContactName().equals(reminder.getContactName())
+                        || r.getContact().getContactInfo().contains(reminder.getContactName())) {
+                    if (r.getMessage().equals(reminder.getMessage())) {
+                        if (r.getTimeReceived().equals(reminder.getTimeReceived())) {
+                            return i;
+                        }
+                    }
+                }
+            }
+            return -1;
         }
 
 

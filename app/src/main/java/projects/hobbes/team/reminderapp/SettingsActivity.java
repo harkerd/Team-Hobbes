@@ -22,6 +22,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     //todo make this better
     private static final String NAME_KEY = "contactName";
+    private static final String APP_NAME = "appName";
     private static final String APP_KEY = "reminderapp.settings.appkey";
     public String contactName;
     public String appName;
@@ -35,8 +36,7 @@ public class SettingsActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         contactName = getIntent().getStringExtra(NAME_KEY);
-        appName = "Messenger";
-
+        appName =getIntent().getStringExtra(APP_NAME);
 
         currentAppSettings = SettingsModel.getInstance().getAppSettings(appName);
 
@@ -47,7 +47,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         }
         else {
-            setTitle(appName + "'s Default Settings");
+            setTitle("Settings");
         }
 
 
