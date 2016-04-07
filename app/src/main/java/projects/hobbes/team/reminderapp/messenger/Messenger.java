@@ -1,6 +1,7 @@
 package projects.hobbes.team.reminderapp.messenger;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -56,6 +57,8 @@ public class Messenger implements API
 
                     while (pCur.moveToNext())
                     {
+                        //This segment is used to remove any characters from phone numbers that are not numbers
+                        //This was necessary to make them the same number that are extracted from messages
                         String currPhoneNum = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
                         StringBuilder phoneNumber = new StringBuilder("");
@@ -74,18 +77,13 @@ public class Messenger implements API
                     }
                     pCur.close();
 
-                    Contact newContact = null;
+                    if(phoneNumbers.isEmpty())
+                        continue;
 
-                    if (phoneNumbers.isEmpty())
-                    {
-                        newContact = new Contact(name);
-                    }
-                    else
-                    {
-                        newContact = new Contact(name,phoneNumbers,null);
-                    }
+                    //Extract image uri
+                    Uri imageURI = getContactImage(context, id);
 
-                    contactsList.add(newContact);
+                    contactsList.add(new Contact(name,phoneNumbers,imageURI));
                 }
             }
         }
@@ -95,6 +93,39 @@ public class Messenger implements API
         Collections.sort(contactsList, new ContactComparator());
 
         return contactsList;
+    }
+
+    private Uri getContactImage(Context context, String id)
+    {
+        try
+        {
+            Cursor cur = context.getContentResolver().query(ContactsContract.Data.CONTENT_URI,
+                                                            null,
+                                                            ContactsContract.Data.CONTACT_ID + "=" + id + " AND "
+                                                            + ContactsContract.Data.MIMETYPE + "='"
+                                                            + ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE + "'", null,
+                                                            null);
+
+            if (cur != null)
+            {
+                if (!cur.moveToFirst())
+                {
+                    return null; // no photo
+                }
+            } else
+            {
+                return null; // error in cursor process
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+
+        Uri person = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, Long.parseLong(id));
+
+        return Uri.withAppendedPath(person, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
     }
 
     public class ContactComparator implements Comparator<Contact>

@@ -1,6 +1,7 @@
 package projects.hobbes.team.reminderapp.model;
 
 import android.media.Image;
+import android.net.Uri;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +11,7 @@ public class Contact {
     private ContactSettings contactSettings;
     private String name;
     private List<String> contactInfo;
-    private Image image;
+    private Uri image;
 
     public Contact(String name) {
         this.name = name;
@@ -20,7 +21,7 @@ public class Contact {
         }
     }
 
-    public Contact(String name, List<String> contactInfo, Image image) {
+    public Contact(String name, List<String> contactInfo, Uri image) {
         this.name = name;
         this.contactInfo = contactInfo;
         if (contactInfo == null) {
@@ -39,7 +40,7 @@ public class Contact {
         }
     }
 
-    public Image getImage()
+    public Uri getImage()
     {
         return image;
     }
