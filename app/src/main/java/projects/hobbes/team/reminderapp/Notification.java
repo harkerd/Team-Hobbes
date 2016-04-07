@@ -29,11 +29,27 @@ public class Notification {
 //        rv.setString(R.id.Name, "setText", "TestName");
         rv.setTextViewText(R.id.Name, reminder.getContactName());
         rv.setTextViewText(R.id.Content, reminder.getMessage());
+
         //reply should open the app
         //Snooze should snooze the notification (reminder)
         //ignore should turn off reminders for this notification.
-//        Intent ignoreIntent = new Intent();
-//        rv.setOnClickPendingIntent(R.id.Ignore, );
+
+
+        PendingIntent ignorePendingIntent = PendingIntent.getActivity(context, 0,
+                makeIntent(context, NotificationIntentHandlerActivity.ACTION_IGNORE, reminder),
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        rv.setOnClickPendingIntent(R.id.Ignore, ignorePendingIntent);
+
+        PendingIntent replyPendingIntent = PendingIntent.getActivity(context, 0,
+                makeIntent(context, NotificationIntentHandlerActivity.ACTION_REPLY, reminder),
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        rv.setOnClickPendingIntent(R.id.Reply, replyPendingIntent);
+
+        PendingIntent snoozePendingIntent = PendingIntent.getActivity(context, 0,
+                makeIntent(context, NotificationIntentHandlerActivity.ACTION_SNOOZE, reminder),
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        rv.setOnClickPendingIntent(R.id.Snooze, snoozePendingIntent);
+
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
@@ -49,9 +65,20 @@ public class Notification {
                         0,
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
+
         mBuilder.setContentIntent(resultPendingIntent);
         NotificationManager mNotificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(0, mBuilder.build());
+    }
+
+    private Intent makeIntent(Context context, String action, Reminder reminder){
+        Intent intent = new Intent(context, NotificationIntentHandlerActivity.class);
+        intent.setAction(action);
+        intent.putExtra("app", reminder.getApp());
+        intent.putExtra("name", reminder.getContactName());
+        intent.putExtra("message", reminder.getMessage());
+        intent.putExtra("timeRecieved", reminder.getTimeReceived().getTime());
+        return intent;
     }
 }

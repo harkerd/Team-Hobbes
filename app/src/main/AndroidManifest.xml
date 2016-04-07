@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="projects.hobbes.team.reminderapp">
+
     <uses-permission android:name="android.permission.WRITE_SMS" />
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/elephant_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <uses-permission android:name="android.permission.WAKE_LOCK" />
 
-        <uses-permission android:name="android.permission.WAKE_LOCK"/>
-        <receiver android:process=":remote" android:name=".NotificationAlarm"></receiver>
+        <receiver
+            android:name=".NotificationAlarm"
+            android:process=":remote" />
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -35,8 +40,8 @@
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -44,7 +49,15 @@
         <service
             android:name=".NotificationService"
             android:enabled="true"
-            android:exported="true"/>
+            android:exported="true" />
+
+        <activity android:name=".NotificationIntentHandlerActivity">
+            <intent-filter>
+                <action android:name="project.hobbes.team.reminderapp.action.IGNORE" />
+
+
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
