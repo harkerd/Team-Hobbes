@@ -187,9 +187,10 @@ public class Puller
                         if (indexOfReminder(newMessages, reminder) == -1) {
                             messagesToRemove.add(reminder);
                         }
-                        else if(reminder.isOverdue())
+                        else if(reminder.isOverdue() && !reminder.isNotificationSent())
                         {
                             MainActivity.sendNotification(reminder);
+                            reminder.setNotificationSent(true);
                         }
                     }
                     if (messagesToRemove.size() > 0) {

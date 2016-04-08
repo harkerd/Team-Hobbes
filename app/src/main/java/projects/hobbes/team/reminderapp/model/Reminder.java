@@ -17,7 +17,8 @@ public class Reminder {
     private Contact contact;
     private boolean isOverdue;
     private Date remindTime;
-    private boolean ignore;
+    private boolean ignore = false;
+    private boolean notificationSent = false;
 
     public Reminder() {
 
@@ -93,8 +94,16 @@ public class Reminder {
         return ignore;
     }
 
-    public void setIsOverdue(boolean isOverdue) {
-        this.isOverdue = isOverdue;
+    public void setIgnore(boolean ignore) {
+        this.ignore = ignore;
+    }
+
+    public boolean isNotificationSent() {
+        return notificationSent;
+    }
+
+    public void setNotificationSent(boolean notificationSent) {
+        this.notificationSent = notificationSent;
     }
 
     public boolean equals(Object o) {
