@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -134,7 +135,9 @@ public class Puller
                     //merge lists
                     List<Reminder> pendingMessagesInModel = RemindersModel.getInstance().getRemindersList(appName);
                     List<Reminder> messagesFromAPI = api.getMessages(Puller.context);
-
+                    if (messagesFromAPI == null) {
+                        continue;
+                    }
                     List<Reminder> messagesToAdd = new ArrayList<>();
                     List<Reminder> newMessages = new ArrayList<>();
                     for(Reminder message : messagesFromAPI)
@@ -164,7 +167,7 @@ public class Puller
                             if(realContact == null)
                             {
                                 ContactSettings defaultSettings = SettingsModel.getInstance().getAppSettings(appName).getDefaultContactSettings();
-                                realContact = new Contact(defaultSettings, contactName, null);
+                                realContact = new Contact(defaultSettings, contactName, Collections.singletonList(contactName));
                             }
                             String reminderTime = realContact.getContactSettings().getReminderTime();
                             Date remindTime = new Date(message.getTimeReceived().getTime() + stringToMilSeconds(reminderTime));

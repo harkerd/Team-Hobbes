@@ -3,9 +3,11 @@ package projects.hobbes.team.reminderapp.messenger;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
+import android.provider.Telephony;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -39,6 +41,9 @@ public class Messenger implements API
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
                 null, null, null, null);
 
+        if (cur == null) {
+            return contactsList;
+        }
         if (cur.getCount() > 0)
         {
             while (cur.moveToNext())
@@ -55,27 +60,26 @@ public class Messenger implements API
 
                     ArrayList<String> phoneNumbers = new ArrayList<>();
 
-                    while (pCur.moveToNext())
-                    {
-                        //This segment is used to remove any characters from phone numbers that are not numbers
-                        //This was necessary to make them the same number that are extracted from messages
-                        String currPhoneNum = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                    if (pCur != null) {
+                        while (pCur.moveToNext()) {
+                            //This segment is used to remove any characters from phone numbers that are not numbers
+                            //This was necessary to make them the same number that are extracted from messages
+                            String currPhoneNum = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
-                        StringBuilder phoneNumber = new StringBuilder("");
+                            StringBuilder phoneNumber = new StringBuilder("");
 
-                        for(int i = 0; i < currPhoneNum.length(); i++)
-                        {
-                            char currChar = currPhoneNum.charAt(i);
+                            for (int i = 0; i < currPhoneNum.length(); i++) {
+                                char currChar = currPhoneNum.charAt(i);
 
-                            if(Character.isDigit(currChar))
-                            {
-                                phoneNumber.append(currChar);
+                                if (Character.isDigit(currChar)) {
+                                    phoneNumber.append(currChar);
+                                }
                             }
-                        }
 
-                        phoneNumbers.add(phoneNumber.toString());
+                            phoneNumbers.add(phoneNumber.toString());
+                        }
+                        pCur.close();
                     }
-                    pCur.close();
 
                     if(phoneNumbers.isEmpty())
                         continue;
@@ -87,38 +91,33 @@ public class Messenger implements API
                 }
             }
         }
-        else
+        else {
+            cur.close();
             return contactsList;
+        }
 
         Collections.sort(contactsList, new ContactComparator());
 
+        cur.close();
         return contactsList;
     }
 
     private Uri getContactImage(Context context, String id)
     {
-        try
-        {
-            Cursor cur = context.getContentResolver().query(ContactsContract.Data.CONTENT_URI,
-                                                            null,
-                                                            ContactsContract.Data.CONTACT_ID + "=" + id + " AND "
-                                                            + ContactsContract.Data.MIMETYPE + "='"
-                                                            + ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE + "'", null,
-                                                            null);
-
-            if (cur != null)
-            {
-                if (!cur.moveToFirst())
-                {
+        try (Cursor cur = context.getContentResolver().query(ContactsContract.Data.CONTENT_URI,
+                null,
+                ContactsContract.Data.CONTACT_ID + "=" + id + " AND "
+                        + ContactsContract.Data.MIMETYPE + "='"
+                        + ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE + "'", null,
+                null)) {
+            if (cur != null) {
+                if (!cur.moveToFirst()) {
                     return null; // no photo
                 }
-            } else
-            {
+            } else {
                 return null; // error in cursor process
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -149,12 +148,21 @@ public class Messenger implements API
         Cursor sentCursor = contentResolver.query(Uri.parse("content://sms/sent"), null, null, null, null);
 
         //SMS Column Indexes
+        if (inboxCursor == null || sentCursor == null) {
+            if (inboxCursor != null) {
+                inboxCursor.close();
+            }
+            if (sentCursor != null) {
+                sentCursor.close();
+            }
+            return null;
+        }
         int indexBody = inboxCursor.getColumnIndex(BODY);
         int indexRead = inboxCursor.getColumnIndex(READ);
         int indexDate = inboxCursor.getColumnIndex(DATE);
         int indexAddr = inboxCursor.getColumnIndex(ADDRESS);
 
-        long weeksBackMilliseconds = new Long("2419200000");
+        long weeksBackMilliseconds = Long.valueOf("2419200000");
         long millisecondsBack = new Date().getTime() - weeksBackMilliseconds;
 
         if ( indexBody < 0 || !inboxCursor.moveToFirst() ) return smsList;
@@ -236,7 +244,9 @@ public class Messenger implements API
             }
         }
         while( inboxCursor.moveToNext() );
-        
+
+        inboxCursor.close();
+        sentCursor.close();
         return smsList;
     }
 
@@ -248,8 +258,17 @@ public class Messenger implements API
     @Override
     public void launchActivity(Contact contact, Context context)
     {
-        //todo this will launch the actual Messenger app, not needed for user testing
-        Log.d("Messenger", "launching activity");
-        Toast.makeText(context, "This will actually launch the Messenger app in the real thing", Toast.LENGTH_SHORT).show();
+        String defaultSmsPackageName = Telephony.Sms.getDefaultSmsPackage(context);
+
+        Intent sendIntent = new Intent(Intent.ACTION_SEND);
+        sendIntent.setType("text/plain");
+        sendIntent.putExtra("address", contact.getContactInfo().get(0));
+
+        if (defaultSmsPackageName != null)// Can be null in case that there is no default, then the user would be able to choose
+        // any app that support this intent.
+        {
+            sendIntent.setPackage(defaultSmsPackageName);
+        }
+        context.startActivity(sendIntent);
     }
 }
