@@ -82,6 +82,39 @@ public class MainActivity extends AppCompatActivity
         return parentListItems;
     }
 
+    public static void refreshIgnoreList(final String appName) {
+        if (context == null) {
+            return;
+        }
+        if (recyclerView != null && expandableAdapter != null) {
+            ((MainActivity)context).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d(TAG, "refresh ignore for " + appName);
+                    List<Reminder> reminders = RemindersModel.getInstance().getRemindersList(appName);
+                    List<Reminder> ignored = RemindersModel.getInstance().getIgnoredReminders(appName);
+                    int parentIndex = 0;
+                    for (ParentListItem parentListItem : expandableAdapter.getParentItemList()) {
+                        if (parentListItem instanceof MyParentObject) {
+                            String appNameInList = ((MyParentObject) parentListItem).getTitle();
+                            if (appNameInList.equals(appName)) {
+                                for (Reminder ignoredReminder : ignored) {
+                                    if (reminders.contains(ignoredReminder)) {
+                                        int index = parentListItem.getChildItemList().indexOf(ignoredReminder);
+                                        RemindersModel.getInstance().getRemindersList(appName).remove(ignoredReminder);
+                                        expandableAdapter.notifyChildItemRemoved(parentIndex, index);
+                                    }
+                                }
+                            }
+                        }
+                        parentIndex++;
+                    }
+                    expandableAdapter.notifyDataSetChanged();
+                }
+            });
+        }
+    }
+
     public static void refreshList(final Map<String,List<Reminder>> addedMessages, final Map<String,List<Reminder>> removedMessages) {
         if (context == null || !((MainActivity)context).hasWindowFocus()) {
             return;
@@ -92,6 +125,8 @@ public class MainActivity extends AppCompatActivity
                 public void run() {
                     int size = RemindersModel.getInstance().getRemindersList("Messenger").size();
                     Log.d(TAG, "notifying data set changed. current size: " + size);
+
+                    // this stuff is purely for debug -------------------------------
                     int addSize = 0;
                     for (String key : addedMessages.keySet()) {
                         addSize += addedMessages.get(key).size();
@@ -102,6 +137,9 @@ public class MainActivity extends AppCompatActivity
                         removeSize += removedMessages.get(key).size();
                     }
                     Log.d(TAG, "notifying data set changed. remove size: " + removeSize);
+                    // ---------------------------------------------------------------
+
+                    // add messages that need to be added
                     if (addedMessages.size() > 0) {
                         for (String app : addedMessages.keySet()) {
                             for (ParentListItem parentListItem : expandableAdapter.getParentItemList()) {
@@ -110,7 +148,7 @@ public class MainActivity extends AppCompatActivity
                                     if (app.equals(appName)) {
                                         RemindersModel.sort(addedMessages.get(app));
                                         for (int i = addedMessages.get(app).size() -1; i >= 0 ; i--) {
-                                            RemindersModel.getInstance().getRemindersList(app).add(0,addedMessages.get(app).get(i));
+                                            RemindersModel.getInstance().getRemindersList(app).add(0, addedMessages.get(app).get(i));
                                             expandableAdapter.notifyChildItemInserted(0, 0);
                                         }
                                     }
@@ -118,6 +156,7 @@ public class MainActivity extends AppCompatActivity
                             }
                         }
                     }
+                    //remove messages that need to be removed
                     if (removedMessages.size() > 0) {
                         for (String app : removedMessages.keySet()) {
                             for (ParentListItem parentListItem : expandableAdapter.getParentItemList()) {

@@ -1,11 +1,13 @@
 package projects.hobbes.team.reminderapp.model;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import projects.hobbes.team.reminderapp.puller.Puller;
 
@@ -17,9 +19,11 @@ public class RemindersModel {
     private static RemindersModel instance;
 
     private Map<String, List<Reminder>> remindersList;
+    private Map<String, List<Reminder>> ignoredRemindersList;
 
     private RemindersModel() {
-        remindersList = new HashMap<>();
+        remindersList = new ConcurrentHashMap<>();
+        ignoredRemindersList = new ConcurrentHashMap<>();
     }
 
     public static RemindersModel getInstance() {
@@ -31,6 +35,7 @@ public class RemindersModel {
 
     public void addApp(String appName, List<Reminder> reminders) {
         remindersList.put(appName, reminders);
+        ignoredRemindersList.put(appName, new ArrayList<Reminder>());
     }
 
     public List<Reminder> getRemindersList(String appName) {
@@ -62,5 +67,13 @@ public class RemindersModel {
                 return Integer.compare(reminder1.getTimeSinceReceived(), reminder2.getTimeSinceReceived());
             }
         });
+    }
+
+    public List<Reminder> getIgnoredReminders(String appName) {
+        return ignoredRemindersList.get(appName);
+    }
+
+    public Map<String, List<Reminder>> getIgnoredRemindersList() {
+        return ignoredRemindersList;
     }
 }

@@ -24,6 +24,7 @@ import com.joanzapata.iconify.fonts.FontAwesomeIcons;
 
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,6 +34,7 @@ import projects.hobbes.team.reminderapp.MainActivity;
 import projects.hobbes.team.reminderapp.R;
 import projects.hobbes.team.reminderapp.SettingsActivity;
 import projects.hobbes.team.reminderapp.model.Reminder;
+import projects.hobbes.team.reminderapp.model.RemindersModel;
 import projects.hobbes.team.reminderapp.model.SettingsModel;
 import projects.hobbes.team.reminderapp.puller.Puller;
 
@@ -202,10 +204,11 @@ public class MyExpandableAdapter extends ExpandableRecyclerAdapter<ParentViewHol
                     ignoreButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            // remove from list
-                            //todo implement this
                             Log.d("ExpandableAdapter", "ignore button pushed");
-                            Toast.makeText(context, "This will actually remove the reminder in the real thing", Toast.LENGTH_SHORT).show();
+                            // remove from list
+                            reminder.setIgnore(true);
+                            RemindersModel.getInstance().getIgnoredReminders(reminder.getApp()).add(reminder);
+                            MainActivity.refreshIgnoreList(reminder.getApp());
                         }
                     });
 

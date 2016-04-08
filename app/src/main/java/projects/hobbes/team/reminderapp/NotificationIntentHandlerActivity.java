@@ -81,17 +81,18 @@ public class NotificationIntentHandlerActivity extends AppCompatActivity {
     }
 
     private void doReply(Reminder reminder){
-        //Toast.makeText(this, "reply pressed for " + reminder.getContact().getName(), Toast.LENGTH_SHORT).show();
-        SettingsModel.getInstance().getAppSettings(reminder.getApp()).getAPI().launchActivity(reminder.getContact(), this);
+       SettingsModel.getInstance().getAppSettings(reminder.getApp()).getAPI().launchActivity(reminder.getContact(), this);
         this.finish();
     }
 
     private void doIgnore(Reminder reminder){
-        Toast.makeText(this, "ignore pressed for " + reminder.getContactName(), Toast.LENGTH_SHORT).show();
+        reminder.setIgnore(true);
+        RemindersModel.getInstance().getIgnoredReminders(reminder.getApp()).add(reminder);
+        MainActivity.refreshIgnoreList(reminder.getApp());
+        this.finish();
     }
 
     private void doSnooze(Reminder reminder){
-        //Toast.makeText(this, "snooze pressed for " + reminder.getContactName(), Toast.LENGTH_SHORT).show();
         String reminderTime = reminder.getContact().getContactSettings().getReminderTime();
         Date remindTime = new Date(new Date().getTime() + Puller.stringToMilSeconds(reminderTime));
         reminder.updateData(reminder.getContact(), remindTime);
