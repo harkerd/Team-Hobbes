@@ -7,11 +7,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 import projects.hobbes.team.reminderapp.model.Contact;
 import projects.hobbes.team.reminderapp.model.Reminder;
 import projects.hobbes.team.reminderapp.model.RemindersModel;
 import projects.hobbes.team.reminderapp.model.SettingsModel;
+import projects.hobbes.team.reminderapp.puller.Puller;
 
 public class NotificationIntentHandlerActivity extends AppCompatActivity {
 
@@ -78,6 +81,11 @@ public class NotificationIntentHandlerActivity extends AppCompatActivity {
     }
 
     private void doSnooze(Reminder reminder){
-        Toast.makeText(this, "snooze pressed for " + reminder.getContactName(), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "snooze pressed for " + reminder.getContactName(), Toast.LENGTH_SHORT).show();
+        String reminderTime = reminder.getContact().getContactSettings().getReminderTime();
+        Date remindTime = new Date(new Date().getTime() + Puller.stringToMilSeconds(reminderTime));
+        reminder.updateData(reminder.getContact(), remindTime);
+        MainActivity.refreshList(new HashMap<String, List<Reminder>>(), new HashMap<String, List<Reminder>>());
+        this.finish();
     }
 }
