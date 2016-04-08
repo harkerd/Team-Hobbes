@@ -1,8 +1,11 @@
 package projects.hobbes.team.reminderapp;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +35,9 @@ public class NotificationIntentHandlerActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String Action = intent.getAction();
+
+        int notificationID = intent.getIntExtra("notificationID", -1);
+        Log.i("NotificationID", String.valueOf(notificationID));
         
         String app = intent.getStringExtra("app");
         String name = intent.getStringExtra("name");
@@ -56,6 +62,10 @@ public class NotificationIntentHandlerActivity extends AppCompatActivity {
                 doSnooze(reminder);
                 break;
         }
+
+        NotificationManager mNotificationManager =
+                (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.cancel(0);
 
 
     }

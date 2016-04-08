@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--?xml version="1.0" encoding="utf-8"?-->
+
+<!-- Generator: Adobe Illustrator 15.0.2, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   id="Layer_1"
+   x="0px"
+   y="0px"
+   viewBox="0 0 512 515.588"
+   enable-background="new 0 0 512 515.588"
+   xml:space="preserve"
+   preserveAspectRatio="xMinYMin meet"
+   width="100%"
+   height="100%"
+   inkscape:version="0.91pre3 r13670"
+   sodipodi:docname="snooze.svg"
+   inkscape:export-filename="C:\Users\Clint\workspace\Team-Hobbes\app\src\main\res\drawable\snooze.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90"><metadata
+   id="metadata9"><rdf:RDF><cc:Work
+       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
+   id="defs7" /><sodipodi:namedview
+   pagecolor="#ffffff"
+   bordercolor="#666666"
+   borderopacity="1"
+   objecttolerance="10"
+   gridtolerance="10"
+   guidetolerance="10"
+   inkscape:pageopacity="0"
+   inkscape:pageshadow="2"
+   inkscape:window-width="1920"
+   inkscape:window-height="1017"
+   id="namedview5"
+   showgrid="false"
+   inkscape:zoom="0.45772982"
+   inkscape:cx="-34.564424"
+   inkscape:cy="257.794"
+   inkscape:window-x="-8"
+   inkscape:window-y="-8"
+   inkscape:window-maximized="1"
+   inkscape:current-layer="Layer_1" />
+<path
+   d="M150.525,39.175L117.631,0L0,98.693l32.894,39.169L150.525,39.175z M512,98.818L394.375,0.131l-32.9,39.168L479.1,137.987     L512,98.818z M255.875,54.787c-127.362,0-230.275,103.169-230.275,230.4c0,127.225,102.913,230.4,230.275,230.4     c127.35,0,230.525-103.176,230.525-230.4C486.4,157.956,383.225,54.787,255.875,54.787z M256,464.388     c-98.943,0-179.2-80.25-179.2-179.2c0-98.943,80.257-179.2,179.2-179.2c98.95,0,179.2,80.257,179.2,179.2     C435.2,384.138,355.075,464.388,256,464.388z M179.2,233.987H272l-92.8,107.525v46.075h153.6v-51.2H240l92.8-107.519v-46.082H179.2     V233.987z"
+   id="path3"
+   style="fill:#707070;fill-opacity:1" />
+</svg>
