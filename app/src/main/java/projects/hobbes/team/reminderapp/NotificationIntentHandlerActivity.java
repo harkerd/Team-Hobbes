@@ -85,6 +85,7 @@ public class NotificationIntentHandlerActivity extends AppCompatActivity {
         String reminderTime = reminder.getContact().getContactSettings().getReminderTime();
         Date remindTime = new Date(new Date().getTime() + Puller.stringToMilSeconds(reminderTime));
         reminder.updateData(reminder.getContact(), remindTime);
+        reminder.setNotificationSent(false);
         MainActivity.refreshList(new HashMap<String, List<Reminder>>(), new HashMap<String, List<Reminder>>());
         this.finish();
     }

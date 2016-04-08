@@ -191,6 +191,7 @@ public class MyExpandableAdapter extends ExpandableRecyclerAdapter<ParentViewHol
                             String reminderTime = reminder.getContact().getContactSettings().getReminderTime();
                             Date remindTime = new Date(new Date().getTime() + Puller.stringToMilSeconds(reminderTime));
                             reminder.updateData(reminder.getContact(), remindTime);
+                            reminder.setNotificationSent(false=);
                             MyExpandableAdapter.this.notifyItemChanged(i);
                         }
                     });
