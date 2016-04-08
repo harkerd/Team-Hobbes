@@ -35,9 +35,6 @@ public class NotificationIntentHandlerActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String Action = intent.getAction();
-
-        int notificationID = intent.getIntExtra("notificationID", -1);
-        Log.i("NotificationID", String.valueOf(notificationID));
         
         String app = intent.getStringExtra("app");
         String name = intent.getStringExtra("name");

@@ -17,10 +17,13 @@ public class Notification {
 
     private Reminder _reminder;
 
-    private static int notificationID = 0;
+    private static int notificationCount = 0;
 
     public void SendNotification(Context context, Reminder reminder)
     {
+        if (!isNotificationVisible(context)){
+            notificationCount = 0;
+        }
         _reminder = reminder;
 //        NotificationCompat.Builder mBuilder =
 //                new NotificationCompat.Builder(context)
@@ -32,7 +35,7 @@ public class Notification {
 //        rv.setTextViewText(R.id.Name, reminder.getContactName());
 //        rv.setTextViewText(R.id.Content, reminder.getMessage());
 //
-//        //reply should open the app
+//        //reply should open the correct app
 //        //Snooze should snooze the notification (reminder)
 //        //ignore should turn off reminders for this notification.
 //
@@ -58,7 +61,7 @@ public class Notification {
                         .setSmallIcon(R.drawable.headelephantlight)
                         .setContentTitle(reminder.getContactName())
                         .setContentText(reminder.getMessage())
-                        .setNumber(notificationID+1)
+                        .setNumber(++notificationCount)
                         .setAutoCancel(true);
         NotificationCompat.Action reply = new NotificationCompat.Action.Builder(R.drawable.vector_reply, "Reply", replyPendingIntent).build();
         NotificationCompat.Action snooze = new NotificationCompat.Action.Builder(R.drawable.vector_snooze, "Snooze", snoozePendingIntent).build();
@@ -71,7 +74,7 @@ public class Notification {
         mBuilder.setPriority(NotificationCompat.PRIORITY_MAX);
 
 
-
+        //Default intent
         Intent resultIntent = new Intent(context, MainActivity.class); //Where does this notification lead?
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
@@ -86,14 +89,12 @@ public class Notification {
         mBuilder.setContentIntent(resultPendingIntent);
         NotificationManager mNotificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationID++;
         mNotificationManager.notify(0, mBuilder.build());
     }
 
     private Intent makeIntent(Context context, String action, Reminder reminder){
         Intent intent = new Intent(context, NotificationIntentHandlerActivity.class);
         intent.setAction(action);
-        intent.putExtra("notificationID", notificationID);
         intent.putExtra("app", reminder.getApp());
         intent.putExtra("name", reminder.getContactName());
         intent.putExtra("message", reminder.getMessage());
