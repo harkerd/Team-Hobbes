@@ -137,8 +137,19 @@ public class MyExpandableAdapter extends ExpandableRecyclerAdapter<ParentViewHol
         });
         reminderViewHolder.contactNameTextView.setText(reminder.getContactName());
         int timeSince = reminder.getTimeSinceReceived(); // may use this to change the text if more than an hour or day
-        String time;
-        time = String.valueOf(reminder.getTimeSinceReceived()) + " minutes ago";
+        String timeAgo = "minutes";
+        if (timeSince >= 60) {
+            timeSince = timeSince / 60;
+            timeAgo = "hours";
+            if (timeSince >= 24) {
+                timeSince = timeSince / 24;
+                timeAgo = "days";
+            }
+        }
+        if (timeSince == 1) {
+            timeAgo = timeAgo.substring(0, timeAgo.length() - 1);
+        }
+        String time = String.format("%d %s ago", timeSince, timeAgo);
         reminderViewHolder.timeTextView.setText(time);
         reminderViewHolder.messageTextView.setText(reminder.getMessage());
         if (reminder.isOverdue()) {
@@ -212,8 +223,7 @@ public class MyExpandableAdapter extends ExpandableRecyclerAdapter<ParentViewHol
                     reminderViewHolder.buttonsSpot.addView(snoozeButton);
                     reminderViewHolder.buttonsSpot.addView(ignoreButton);
                     reminderViewHolder.buttonsSpot.addView(marginViewRight);
-                }
-                else {
+                } else {
                     reminderViewHolder.buttonsSpot.removeAllViews();
                     expandedReminders.remove(reminder);
                 }
