@@ -99,8 +99,9 @@ public class Puller
         {
             while(running)
             {
+                Log.d(TAG, "starting update");
                 updateReminders();
-                Log.d(TAG, "update");
+                Log.d(TAG, "update complete");
                 try
                 {
                     synchronized(this) {
@@ -143,17 +144,23 @@ public class Puller
                     for(Reminder message : messagesFromAPI)
                     {
                         //find the index if it is in the model already
-                        int index = indexOfReminder(pendingMessagesInModel, message);
-                        if(index != -1) //if it is IS in the model already
+                        int indexInModel = indexOfReminder(pendingMessagesInModel, message);
+                        int indexInIgnored = indexOfReminder(RemindersModel.getInstance().getIgnoredReminders(appName), message);
+                        if(indexInModel != -1 || indexInIgnored != -1) //if it is IS in the model or ignored already
                         {
-                            message = pendingMessagesInModel.get(index);
+                            if (indexInIgnored != -1) {
+                                message = RemindersModel.getInstance().getIgnoredReminders(appName).get(indexInIgnored);
+                            }
+                            else {
+                                message = pendingMessagesInModel.get(indexInModel);
+                            }
 //                            String contactName = message.getContactName();
                             Contact contact = message.getContact();
                             //update message
                             message.updateData(contact, null);
                             newMessages.add(message);
                         }
-                        else //if it NOT in the model already
+                        else //if it NOT in the model or ignored already
                         {
                             String contactName = message.getContactName();
                             Contact realContact = null;
@@ -184,6 +191,7 @@ public class Puller
                     {
                         //if message has been responded to, it will no longer be in the pulled in messages, but will still
                         //be in the message in the app. Need to remove those
+                        //todo do something similar for ignored messages
                         if (indexOfReminder(newMessages, reminder) == -1) {
                             messagesToRemove.add(reminder);
                         }
