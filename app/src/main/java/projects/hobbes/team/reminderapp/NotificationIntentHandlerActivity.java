@@ -26,6 +26,7 @@ public class NotificationIntentHandlerActivity extends AppCompatActivity {
     static final String ACTION_REPLY = "project.hobbes.team.reminderapp.action.REPLY";
     static final String ACTION_SNOOZE = "project.hobbes.team.reminderapp.action.SNOOZE";
     static final String ACTION_IGNORE = "project.hobbes.team.reminderapp.action.IGNORE";
+    static final String ACTION_DELETE = "project.hobbes.team.reminderapp.action.DELETE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +50,7 @@ public class NotificationIntentHandlerActivity extends AppCompatActivity {
             actionText.setText("could not find the reminder requested");
         }
 
+
         switch (Action) {
             case ACTION_REPLY:
                 doReply(reminder);
@@ -59,10 +61,14 @@ public class NotificationIntentHandlerActivity extends AppCompatActivity {
             case ACTION_SNOOZE:
                 doSnooze(reminder);
                 break;
+            case ACTION_DELETE:// This happens when the user swipes the notification
+                this.finish();
+                break;
         }
 
         NotificationManager mNotificationManager =
                 (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        Notification.setNotificationCount(0);  //We should only be here if the notification is interacted with
         mNotificationManager.cancel(0);
 
 

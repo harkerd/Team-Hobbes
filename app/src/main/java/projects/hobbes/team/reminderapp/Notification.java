@@ -15,16 +15,20 @@ import projects.hobbes.team.reminderapp.model.Reminder;
  */
 public class Notification {
 
-    private Reminder _reminder;
+    public static int getNotificationCount() {
+        return notificationCount;
+    }
+
+    public static void setNotificationCount(int notificationCount) {
+        Notification.notificationCount = notificationCount;
+    }
 
     private static int notificationCount = 0;
 
     public void SendNotification(Context context, Reminder reminder)
     {
-        if (!isNotificationVisible(context)){
-            notificationCount = 0;
-        }
-        _reminder = reminder;
+        if (notificationCount == 0) {
+
 //        NotificationCompat.Builder mBuilder =
 //                new NotificationCompat.Builder(context)
 //                        .setSmallIcon(R.drawable.headelephantlight)
@@ -40,56 +44,96 @@ public class Notification {
 //        //ignore should turn off reminders for this notification.
 //
 //
-        PendingIntent ignorePendingIntent = PendingIntent.getActivity(context, 0,
-                makeIntent(context, NotificationIntentHandlerActivity.ACTION_IGNORE, reminder),
-                PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent ignorePendingIntent = PendingIntent.getActivity(context, 0,
+                    makeIntent(context, NotificationIntentHandlerActivity.ACTION_IGNORE, reminder),
+                    PendingIntent.FLAG_UPDATE_CURRENT);
 //        rv.setOnClickPendingIntent(R.id.Ignore, ignorePendingIntent);
 //
-        PendingIntent replyPendingIntent = PendingIntent.getActivity(context, 0,
-                makeIntent(context, NotificationIntentHandlerActivity.ACTION_REPLY, reminder),
-                PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent replyPendingIntent = PendingIntent.getActivity(context, 0,
+                    makeIntent(context, NotificationIntentHandlerActivity.ACTION_REPLY, reminder),
+                    PendingIntent.FLAG_UPDATE_CURRENT);
 //        rv.setOnClickPendingIntent(R.id.Reply, replyPendingIntent);
 //
-        PendingIntent snoozePendingIntent = PendingIntent.getActivity(context, 0,
-                makeIntent(context, NotificationIntentHandlerActivity.ACTION_SNOOZE, reminder),
-                PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent snoozePendingIntent = PendingIntent.getActivity(context, 0,
+                    makeIntent(context, NotificationIntentHandlerActivity.ACTION_SNOOZE, reminder),
+                    PendingIntent.FLAG_UPDATE_CURRENT);
 //        rv.setOnClickPendingIntent(R.id.Snooze, snoozePendingIntent);
 
-
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(context)
-                        .setSmallIcon(R.drawable.headelephantlight)
-                        .setContentTitle(reminder.getContactName())
-                        .setContentText(reminder.getMessage())
-                        .setNumber(++notificationCount)
-                        .setAutoCancel(true);
-        NotificationCompat.Action reply = new NotificationCompat.Action.Builder(R.drawable.vector_reply, "Reply", replyPendingIntent).build();
-        NotificationCompat.Action snooze = new NotificationCompat.Action.Builder(R.drawable.vector_snooze, "Snooze", snoozePendingIntent).build();
-        NotificationCompat.Action ignore = new NotificationCompat.Action.Builder(R.drawable.vector_close, "Ignore", ignorePendingIntent).build();
-
-        mBuilder.addAction(reply);
-        mBuilder.addAction(snooze);
-        mBuilder.addAction(ignore);
-
-        mBuilder.setPriority(NotificationCompat.PRIORITY_MAX);
+            PendingIntent deletePendingIntent = PendingIntent.getActivity(context, 0,
+                    makeIntent(context, NotificationIntentHandlerActivity.ACTION_DELETE, reminder),
+                    PendingIntent.FLAG_UPDATE_CURRENT);
 
 
-        //Default intent
-        Intent resultIntent = new Intent(context, MainActivity.class); //Where does this notification lead?
+            NotificationCompat.Builder mBuilder =
+                    new NotificationCompat.Builder(context)
+                            .setSmallIcon(R.drawable.headelephantlight)
+                            .setContentTitle(reminder.getContactName())
+                            .setContentText(reminder.getMessage())
+                            .setNumber(++notificationCount)
+                            .setAutoCancel(true);
+            NotificationCompat.Action reply = new NotificationCompat.Action.Builder(R.drawable.vector_reply, "Reply", replyPendingIntent).build();
+            NotificationCompat.Action snooze = new NotificationCompat.Action.Builder(R.drawable.vector_snooze, "Snooze", snoozePendingIntent).build();
+            NotificationCompat.Action ignore = new NotificationCompat.Action.Builder(R.drawable.vector_close, "Ignore", ignorePendingIntent).build();
 
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-        stackBuilder.addParentStack(MainActivity.class);
-        stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(
-                        0,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
+            mBuilder.addAction(reply);
+            mBuilder.addAction(snooze);
+            mBuilder.addAction(ignore);
+            mBuilder.setDeleteIntent(deletePendingIntent);
 
-        mBuilder.setContentIntent(resultPendingIntent);
-        NotificationManager mNotificationManager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(0, mBuilder.build());
+            mBuilder.setPriority(NotificationCompat.PRIORITY_MAX);
+
+
+            //Default intent
+            Intent resultIntent = new Intent(context, MainActivity.class); //Where does this notification lead?
+
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+            stackBuilder.addParentStack(MainActivity.class);
+            stackBuilder.addNextIntent(resultIntent);
+            PendingIntent resultPendingIntent =
+                    stackBuilder.getPendingIntent(
+                            0,
+                            PendingIntent.FLAG_UPDATE_CURRENT
+                    );
+
+            mBuilder.setContentIntent(resultPendingIntent);
+            NotificationManager mNotificationManager =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.notify(0, mBuilder.build());
+        } else{
+            NotificationCompat.Builder mBuilder =
+                    new NotificationCompat.Builder(context)
+                            .setSmallIcon(R.drawable.headelephantlight)
+                            .setContentTitle("Remind Me!")
+
+                            .setNumber(++notificationCount)
+                            .setAutoCancel(true);
+
+            mBuilder.setPriority(NotificationCompat.PRIORITY_MAX);
+            mBuilder.setContentText("You have " + notificationCount + " unreplied messages!");
+
+            PendingIntent deletePendingIntent = PendingIntent.getActivity(context, 0,
+                    makeIntent(context, NotificationIntentHandlerActivity.ACTION_DELETE, reminder),
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+
+            mBuilder.setDeleteIntent(deletePendingIntent);
+
+
+            Intent resultIntent = new Intent(context, MainActivity.class); //Where does this notification lead?
+
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+            stackBuilder.addParentStack(MainActivity.class);
+            stackBuilder.addNextIntent(resultIntent);
+            PendingIntent resultPendingIntent =
+                    stackBuilder.getPendingIntent(
+                            0,
+                            PendingIntent.FLAG_UPDATE_CURRENT
+                    );
+
+            mBuilder.setContentIntent(resultPendingIntent);
+            NotificationManager mNotificationManager =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.notify(0, mBuilder.build());
+        }
     }
 
     private Intent makeIntent(Context context, String action, Reminder reminder){

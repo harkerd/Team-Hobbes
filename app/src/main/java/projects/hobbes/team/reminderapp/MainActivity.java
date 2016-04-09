@@ -66,6 +66,8 @@ public class MainActivity extends AppCompatActivity
         recyclerView = (RecyclerView) findViewById(R.id.app_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        Notification.setNotificationCount(0);
+
     }
 
     private List<ParentListItem> getMessages() {
