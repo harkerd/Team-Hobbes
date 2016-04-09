@@ -18,6 +18,7 @@ import projects.hobbes.team.reminderapp.model.Reminder;
 import projects.hobbes.team.reminderapp.model.RemindersModel;
 import projects.hobbes.team.reminderapp.model.SettingsModel;
 import projects.hobbes.team.reminderapp.puller.Puller;
+import projects.hobbes.team.reminderapp.puller.PullerThread;
 
 public class NotificationIntentHandlerActivity extends AppCompatActivity {
 
@@ -91,7 +92,7 @@ public class NotificationIntentHandlerActivity extends AppCompatActivity {
 
     private void doSnooze(Reminder reminder){
         String reminderTime = reminder.getContact().getContactSettings().getReminderTime();
-        Date remindTime = new Date(new Date().getTime() + Puller.stringToMilSeconds(reminderTime));
+        Date remindTime = new Date(new Date().getTime() + PullerThread.stringToMilSeconds(reminderTime));
         reminder.updateData(reminder.getContact(), remindTime);
         reminder.setNotificationSent(false);
         MainActivity.refreshList(new HashMap<String, List<Reminder>>(), new HashMap<String, List<Reminder>>());

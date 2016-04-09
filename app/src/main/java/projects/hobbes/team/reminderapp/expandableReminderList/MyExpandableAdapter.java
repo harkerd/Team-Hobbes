@@ -37,6 +37,7 @@ import projects.hobbes.team.reminderapp.model.Reminder;
 import projects.hobbes.team.reminderapp.model.RemindersModel;
 import projects.hobbes.team.reminderapp.model.SettingsModel;
 import projects.hobbes.team.reminderapp.puller.Puller;
+import projects.hobbes.team.reminderapp.puller.PullerThread;
 
 
 public class MyExpandableAdapter extends ExpandableRecyclerAdapter<ParentViewHolder, ReminderViewHolder> {
@@ -191,7 +192,7 @@ public class MyExpandableAdapter extends ExpandableRecyclerAdapter<ParentViewHol
                         public void onClick(View v) {
                             // do snooze
                             String reminderTime = reminder.getContact().getContactSettings().getReminderTime();
-                            Date remindTime = new Date(new Date().getTime() + Puller.stringToMilSeconds(reminderTime));
+                            Date remindTime = new Date(new Date().getTime() + PullerThread.stringToMilSeconds(reminderTime));
                             reminder.updateData(reminder.getContact(), remindTime);
                             reminder.setNotificationSent(false);
                             MyExpandableAdapter.this.notifyItemChanged(i);

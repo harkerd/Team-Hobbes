@@ -2,8 +2,11 @@ package projects.hobbes.team.reminderapp.model;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,11 +15,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.joanzapata.iconify.IconDrawable;
 import com.joanzapata.iconify.fonts.FontAwesomeIcons;
-
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import projects.hobbes.team.reminderapp.R;
 import projects.hobbes.team.reminderapp.SettingsActivity;
 
@@ -29,15 +32,8 @@ public class ContactsListAdapter extends RecyclerView.Adapter<ContactsListAdapte
     public ContactsListAdapter(Context context, Map<String, Contact> contactMap, String appName)
     {
         this.context = context;
-        this.contacts = new ArrayList<>();
-        this.appName = appName;
-        for(String contactName : contactMap.keySet())
-        {
-            contacts.add(contactMap.get(contactName));
-        }
-
+        setData(contactMap, appName);
     }
-
 
     @Override
     public ContactHolder onCreateViewHolder(ViewGroup parent, int viewType)
@@ -57,6 +53,17 @@ public class ContactsListAdapter extends RecyclerView.Adapter<ContactsListAdapte
     public int getItemCount()
     {
         return contacts.size();
+    }
+
+    public void setData(Map<String, Contact> contactMap, String appName)
+    {
+        this.contacts = new ArrayList<>();
+        this.appName = appName;
+        for(String contactName : contactMap.keySet())
+        {
+            contacts.add(contactMap.get(contactName));
+        }
+        notifyDataSetChanged();
     }
 
     public class ContactHolder extends RecyclerView.ViewHolder
@@ -87,16 +94,25 @@ public class ContactsListAdapter extends RecyclerView.Adapter<ContactsListAdapte
             ImageView iconView = (ImageView) itemView.findViewById(R.id.contact_icon);
             TextView textView = (TextView) itemView.findViewById(R.id.contact_name);
 
-            if(contact.getImage() == null)
+            Drawable icon = new IconDrawable(context, FontAwesomeIcons.fa_user).color(Color.WHITE).sizeDp(60);
+            try
             {
-                Drawable icon = new IconDrawable(context, FontAwesomeIcons.fa_user).color(Color.WHITE).sizeDp(60);
-                iconView.setImageDrawable(icon);
+                Uri uri = contact.getImage();
+                InputStream inputStream = context.getContentResolver().openInputStream(uri);
+                icon = Drawable.createFromStream(inputStream, uri.toString());
+
+                Bitmap b = ((BitmapDrawable)icon).getBitmap();
+                b = Bitmap.createScaledBitmap(b, 240, 240, false);
+                icon = new BitmapDrawable(context.getResources(), b);
             }
-            else
-            {
-                //TODO: figure out actual picture...
+            catch (FileNotFoundException e) {
+                System.err.println("FileNotFound");
+            }
+            catch (NullPointerException e) {
+                System.out.println("No image given");
             }
 
+            iconView.setImageDrawable(icon);
             textView.setText(contact.getName());
         }
     }

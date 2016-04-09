@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import projects.hobbes.team.reminderapp.puller.Puller;
+import projects.hobbes.team.reminderapp.puller.PullerThread;
 
 /**
  * Created by Cory on 3/15/2016.
@@ -54,7 +55,7 @@ public class RemindersModel {
             if (reminder.getContactName().equals(contactName)) {
                 Contact contact = SettingsModel.getInstance().getAppSettings(appName).getContactMap().get(contactName);
                 String reminderTime = contact.getContactSettings().getReminderTime();
-                Date remindTime = new Date(reminder.getTimeReceived().getTime() + Puller.stringToMilSeconds(reminderTime));
+                Date remindTime = new Date(reminder.getTimeReceived().getTime() + PullerThread.stringToMilSeconds(reminderTime));
                 //update message
                 reminder.updateData(contact, remindTime);
             }

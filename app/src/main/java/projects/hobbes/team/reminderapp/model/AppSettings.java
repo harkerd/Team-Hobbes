@@ -1,6 +1,5 @@
 package projects.hobbes.team.reminderapp.model;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -12,7 +11,6 @@ public class AppSettings {
     private ContactSettings defaultContactSettings;
     private Map<String, Contact> contactMap;
     private API api;
-    //private String pollingIntervals???
 
     public AppSettings(API api) {
         defaultContactSettings = new ContactSettings();
