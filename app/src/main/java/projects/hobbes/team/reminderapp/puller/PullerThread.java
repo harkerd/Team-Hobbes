@@ -103,6 +103,10 @@ public class PullerThread extends Thread
                 Map<String, Contact> contactsForModel = new HashMap<>();
                 List<Contact> contacts = api.getContacts(Puller.context);
                 for(Contact person : contacts) {
+                    ContactSettings contactSettings = app.getSpecificContactSettings(person.getName());
+                    if(contactSettings != null) {
+                        person.setContactSettings(contactSettings);
+                    }
                     contactsForModel.put(person.getName(), person);
                 }
                 SettingsModel.getInstance().getAppSettings(appName).setContacts(contactsForModel);
