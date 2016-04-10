@@ -23,6 +23,10 @@ public class SettingsModel {
         return instance;
     }
 
+    public static void setInstance(SettingsModel model) {
+        instance = model;
+    }
+
     public void addApp(String appName, AppSettings appSettings) {
         appSettingsMap.put(appName, appSettings);
     }

@@ -34,6 +34,10 @@ public class RemindersModel {
         return instance;
     }
 
+    public static void setInstance(RemindersModel model) {
+        instance = model;
+    }
+
     public void addApp(String appName, List<Reminder> reminders) {
         remindersList.put(appName, reminders);
         ignoredRemindersList.put(appName, new ArrayList<Reminder>());

@@ -1,6 +1,5 @@
 package projects.hobbes.team.reminderapp.puller;
 
-import android.os.Looper;
 import android.util.Log;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,8 +7,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Handler;
-
 import projects.hobbes.team.reminderapp.MainActivity;
 import projects.hobbes.team.reminderapp.model.AppSettings;
 import projects.hobbes.team.reminderapp.model.Contact;
@@ -184,6 +181,7 @@ public class PullerThread extends Thread
             }
         }
         MainActivity.refreshList(messagesToAddToApps, messagesToRemoveFromApps);
+        DatabaseProxy.setData();
     }
 
     private int indexOfReminder(List<Reminder> reminderList, Reminder reminder)

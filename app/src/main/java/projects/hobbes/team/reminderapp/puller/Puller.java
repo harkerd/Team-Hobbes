@@ -4,18 +4,10 @@ import android.content.Context;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
-import java.util.Map;
-
-import projects.hobbes.team.reminderapp.MainActivity;
 import projects.hobbes.team.reminderapp.messenger.Messenger;
 import projects.hobbes.team.reminderapp.model.AppSettings;
-import projects.hobbes.team.reminderapp.model.Contact;
-import projects.hobbes.team.reminderapp.model.ContactSettings;
 import projects.hobbes.team.reminderapp.model.Reminder;
 import projects.hobbes.team.reminderapp.model.RemindersModel;
 import projects.hobbes.team.reminderapp.model.SettingsModel;
@@ -35,6 +27,8 @@ public class Puller
         if(puller == null)
         {
             puller = new PullerThread();
+            //DatabaseProxy.init(context);
+            //DatabaseProxy.getData();
         }
         if ( !((PullerThread)puller).isRunning() ) {
             //populateFakeData();

@@ -41,6 +41,10 @@ public class ContactsListActivity extends AppCompatActivity implements Puller.In
             spinner.setVisibility(View.VISIBLE);
             Puller.setLoadingInitialDataListener(this);
         }
+        else
+        {
+            spinner.setVisibility(View.GONE);
+        }
     }
 
     @Override
