@@ -34,14 +34,13 @@ public class ContactsListActivity extends AppCompatActivity implements Puller.In
         adapter = new ContactsListAdapter(this, appSettings.getContactMap(), appName);
         listView.setAdapter(adapter);
 
-
-        if(Puller.isLoading())
+        spinner = (ProgressBar) findViewById(R.id.progressBar);
+        //if(Puller.isLoading())
         {
-            spinner = (ProgressBar) findViewById(R.id.progressBar);
-            spinner.setVisibility(View.VISIBLE);
+            //spinner.setVisibility(View.VISIBLE);
             Puller.setLoadingInitialDataListener(this);
         }
-        else
+        //else
         {
             spinner.setVisibility(View.GONE);
         }
@@ -55,7 +54,7 @@ public class ContactsListActivity extends AppCompatActivity implements Puller.In
             @Override
             public void run()
             {
-                spinner.setVisibility(View.GONE);
+                //spinner.setVisibility(View.GONE);
                 adapter.setData(appSettings.getContactMap(), appName);
             }
         });

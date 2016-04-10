@@ -20,6 +20,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
+
 import projects.hobbes.team.reminderapp.R;
 import projects.hobbes.team.reminderapp.SettingsActivity;
 
@@ -57,12 +59,21 @@ public class ContactsListAdapter extends RecyclerView.Adapter<ContactsListAdapte
 
     public void setData(Map<String, Contact> contactMap, String appName)
     {
-        this.contacts = new ArrayList<>();
+        Map<String, Contact> tempContactsMap = new TreeMap<>();
         this.appName = appName;
+
         for(String contactName : contactMap.keySet())
         {
-            contacts.add(contactMap.get(contactName));
+            Contact c = contactMap.get(contactName);
+            tempContactsMap.put(c.getName(), c);
         }
+
+        this.contacts = new ArrayList<>();
+        for(Contact c : tempContactsMap.values())
+        {
+            contacts.add(c);
+        }
+
         notifyDataSetChanged();
     }
 

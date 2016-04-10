@@ -27,11 +27,10 @@ public class Puller
         if(puller == null)
         {
             puller = new PullerThread();
-            //DatabaseProxy.init(context);
-            //DatabaseProxy.getData();
+            DatabaseProxy.init(context);
+            DatabaseProxy.getData();
         }
         if ( !((PullerThread)puller).isRunning() ) {
-            //populateFakeData();
             Log.d(TAG, "Starting the puller");
             puller.start();
         }
@@ -70,20 +69,6 @@ public class Puller
 
     public static boolean isLoading() {
         return loadingInitialData;
-    }
-
-    public static void populateFakeData()
-    {
-        API messenger = new Messenger();
-        SettingsModel.getInstance().addApp("Messenger", new AppSettings(messenger));
-        RemindersModel.getInstance().addApp("Messenger", new ArrayList<Reminder>());
-
-//        SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("John Doe", new Contact("John Doe"));
-//        SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("John Smith", new Contact("John Smith"));
-//        SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("Jane Doe", new Contact("Jane Doe"));
-//        SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("Bosco", new Contact("Bosco"));
-//        SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("James Bond", new Contact("James Bond"));
-//        SettingsModel.getInstance().getAppSettings("Messenger").getContactMap().put("Zoolander", new Contact("Zoolander"));
     }
 
     public interface InitialDataLoadingListener {

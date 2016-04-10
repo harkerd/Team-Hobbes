@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity
 
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
-        Puller.populateFakeData();
         Puller.start(this);
 
         recyclerView = (RecyclerView) findViewById(R.id.app_list);

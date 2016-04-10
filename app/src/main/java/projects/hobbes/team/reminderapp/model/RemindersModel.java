@@ -17,7 +17,7 @@ import projects.hobbes.team.reminderapp.puller.PullerThread;
  */
 public class RemindersModel {
 
-    private static RemindersModel instance;
+    private transient static RemindersModel instance;
 
     private Map<String, List<Reminder>> remindersList;
     private Map<String, List<Reminder>> ignoredRemindersList;

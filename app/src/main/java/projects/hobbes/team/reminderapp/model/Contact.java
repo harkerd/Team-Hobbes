@@ -11,7 +11,7 @@ public class Contact {
     private ContactSettings contactSettings;
     private String name;
     private List<String> contactInfo;
-    private Uri image;
+    private transient Uri image;
 
     public Contact(String name) {
         this.name = name;

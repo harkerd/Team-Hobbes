@@ -8,12 +8,11 @@ import projects.hobbes.team.reminderapp.puller.FakeMessenger;
 
 public class SettingsModel {
 
-    private static SettingsModel instance;
+    private transient static SettingsModel instance;
     private final Map<String, AppSettings> appSettingsMap;
 
     private SettingsModel() {
         appSettingsMap = new HashMap<>();
-//        appSettingsMap.put("Messenger", new AppSettings(new FakeMessenger()));
     }
 
     public static SettingsModel getInstance() {
