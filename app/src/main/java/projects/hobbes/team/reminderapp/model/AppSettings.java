@@ -33,6 +33,10 @@ public class AppSettings {
         return contactMap;
     }
 
+    public Contact getContact(String name) {
+        return contactMap.get(name);
+    }
+
     public boolean isTurnedOn() {
         return isTurnedOn;
     }
