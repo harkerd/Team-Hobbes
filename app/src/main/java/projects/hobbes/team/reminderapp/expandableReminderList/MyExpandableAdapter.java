@@ -81,7 +81,7 @@ public class MyExpandableAdapter extends ExpandableRecyclerAdapter<ParentViewHol
     }
 
     @Override
-    public void onBindParentViewHolder(ParentViewHolder myParentViewHolder, int i, ParentListItem parentListItem) {
+    public void onBindParentViewHolder(ParentViewHolder myParentViewHolder, int i, final ParentListItem parentListItem) {
         final MyParentViewHolder parentViewHolder = (MyParentViewHolder) myParentViewHolder;
         if (parentListItem instanceof MyParentObject) {
             MyParentObject parentObject = (MyParentObject) parentListItem;
@@ -97,6 +97,7 @@ public class MyExpandableAdapter extends ExpandableRecyclerAdapter<ParentViewHol
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, AppSettingsActivity.class);
+                    intent.putExtra("appName", ((MyParentObject) parentListItem).getTitle());
                     context.startActivity(intent);
                 }
             });
@@ -252,13 +253,17 @@ public class MyExpandableAdapter extends ExpandableRecyclerAdapter<ParentViewHol
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             //todo: in the real thing, this needs to be implemented
             builder.setMessage("There are no other apps supported to add!")
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener()
+                    {
+                        public void onClick(DialogInterface dialog, int id)
+                        {
                             // This will add the app
                         }
                     })
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+                    {
+                        public void onClick(DialogInterface dialog, int id)
+                        {
                             // User cancelled the dialog
                         }
                     });

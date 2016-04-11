@@ -28,10 +28,13 @@ public class AppSettingsActivity extends AppCompatActivity {
 
     public String appName;
     public AppSettings currentAppSettings;
+    private static final String APP_NAME = "appName";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        appName = "Messenger";
+
+        appName = getIntent().getStringExtra(APP_NAME);
+
         Log.d("tag", "1");
         super.onCreate(savedInstanceState);
         Log.d("tag", "2");
@@ -61,11 +64,11 @@ public class AppSettingsActivity extends AppCompatActivity {
 
 
 
-        if(SettingsModel.getInstance().getAppSettings(appName) == null)
-        {
-            SettingsModel.getInstance().addApp(appName, new AppSettings(appName));
-            RemindersModel.getInstance().addApp(appName, new ArrayList<Reminder>());
-        }
+//        if(SettingsModel.getInstance().getAppSettings(appName) == null)
+//        {
+//            SettingsModel.getInstance().addApp(appName, new AppSettings(appName));
+//            RemindersModel.getInstance().addApp(appName, new ArrayList<Reminder>());
+//        }
 
         currentAppSettings = SettingsModel.getInstance().getAppSettings(appName);
 

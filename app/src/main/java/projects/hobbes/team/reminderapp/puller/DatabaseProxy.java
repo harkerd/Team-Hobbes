@@ -98,6 +98,9 @@ public class DatabaseProxy extends SQLiteOpenHelper
     {
         SettingsModel.getInstance().addApp("Messenger", new AppSettings("Messenger"));
         RemindersModel.getInstance().addApp("Messenger", new ArrayList<Reminder>());
+
+        SettingsModel.getInstance().addApp("Gmail", new AppSettings("Gmail"));
+        RemindersModel.getInstance().addApp("Gmail", new ArrayList<Reminder>());
     }
 }
 

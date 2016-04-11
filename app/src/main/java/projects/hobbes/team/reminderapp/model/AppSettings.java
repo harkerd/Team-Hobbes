@@ -5,6 +5,7 @@ import java.util.TreeMap;
 
 import projects.hobbes.team.reminderapp.messenger.Messenger;
 import projects.hobbes.team.reminderapp.puller.API;
+import projects.hobbes.team.reminderapp.puller.Gmail;
 
 public class AppSettings {
 
@@ -63,6 +64,10 @@ public class AppSettings {
         if(appName.equals("Messenger"))
         {
             return new Messenger();
+        }
+        else if(appName.equals("Gmail"))
+        {
+            return new Gmail();
         }
         else
         {
