@@ -58,6 +58,11 @@ public class RemindersModel {
         for (Reminder reminder : remindersList.get(appName)) {
             if (reminder.getContactName().equals(contactName)) {
                 Contact contact = SettingsModel.getInstance().getAppSettings(appName).getContactMap().get(contactName);
+                if (contact == null) {
+                    ContactSettings defaultSettings = SettingsModel.getInstance().getAppSettings(appName).getDefaultContactSettings();
+                    contact = new Contact(defaultSettings, contactName, Collections.singletonList(contactName));
+                    //SettingsModel.getInstance().getAppSettings(appName).getContactMap().put(contactName, contact);
+                }
                 String reminderTime = contact.getContactSettings().getReminderTime();
                 Date remindTime = new Date(reminder.getTimeReceived().getTime() + PullerThread.stringToMilSeconds(reminderTime));
                 //update message

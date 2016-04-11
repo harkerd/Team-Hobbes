@@ -51,6 +51,9 @@ public class Contact {
     }
 
     public ContactSettings getContactSettings() {
+        if (contactSettings == null) {
+            contactSettings = new ContactSettings();
+        }
         return contactSettings;
     }
 

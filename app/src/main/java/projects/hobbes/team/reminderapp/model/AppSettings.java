@@ -21,7 +21,7 @@ public class AppSettings {
     }
 
     public ContactSettings getDefaultContactSettings() {
-        return defaultContactSettings;
+        return new ContactSettings();
     }
 
     public void setContacts(Map<String, Contact> contactMap)
@@ -55,6 +55,9 @@ public class AppSettings {
 
     public ContactSettings getSpecificContactSettings (String contactKey)
     {
+        if (contactMap.get(contactKey) == null) {
+            return getDefaultContactSettings();
+        }
         return contactMap.get(contactKey).getContactSettings();
     }
 
