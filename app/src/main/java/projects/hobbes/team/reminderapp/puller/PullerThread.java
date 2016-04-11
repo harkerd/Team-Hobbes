@@ -93,6 +93,7 @@ public class PullerThread extends Thread
     {
         Map<String,List<Reminder>> messagesToAddToApps = new HashMap<>();
         Map<String,List<Reminder>> messagesToRemoveFromApps = new HashMap<>();
+        RemindersModel remindersModel = RemindersModel.getInstance();
         for(String appName : SettingsModel.getInstance().getAppNames())
         {
             AppSettings app = SettingsModel.getInstance().getAppSettings(appName);
@@ -112,7 +113,7 @@ public class PullerThread extends Thread
                 SettingsModel.getInstance().getAppSettings(appName).setContacts(contactsForModel);
 
                 //merge lists
-                List<Reminder> pendingMessagesInModel = RemindersModel.getInstance().getRemindersList(appName);
+                List<Reminder> pendingMessagesInModel = remindersModel.getRemindersList(appName);
                 List<Reminder> messagesFromAPI = api.getMessages(Puller.context);
                 if (messagesFromAPI == null) {
                     continue;
@@ -198,7 +199,7 @@ public class PullerThread extends Thread
             {
                 if (r.getMessage().equals(reminder.getMessage()))
                 {
-                    if (r.getTimeReceived().equals(reminder.getTimeReceived()))
+                    if (r.getTimeReceived().toString().equals(reminder.getTimeReceived().toString()))
                     {
                         return i;
                     }

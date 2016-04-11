@@ -6,6 +6,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+import projects.hobbes.team.reminderapp.MainActivity;
 import projects.hobbes.team.reminderapp.messenger.Messenger;
 import projects.hobbes.team.reminderapp.model.AppSettings;
 import projects.hobbes.team.reminderapp.model.Reminder;
@@ -29,6 +30,9 @@ public class Puller
             puller = new PullerThread();
             DatabaseProxy.init(context);
             DatabaseProxy.getData();
+            for (String appName : RemindersModel.getInstance().getIgnoredRemindersList().keySet()) {
+                MainActivity.refreshIgnoreList(appName);
+            }
         }
         if ( !((PullerThread)puller).isRunning() ) {
             Log.d(TAG, "Starting the puller");

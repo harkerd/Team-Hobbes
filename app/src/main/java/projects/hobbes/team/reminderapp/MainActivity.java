@@ -31,6 +31,7 @@ import projects.hobbes.team.reminderapp.expandableReminderList.MyExpandableAdapt
 import projects.hobbes.team.reminderapp.expandableReminderList.MyParentObject;
 import projects.hobbes.team.reminderapp.model.Reminder;
 import projects.hobbes.team.reminderapp.model.RemindersModel;
+import projects.hobbes.team.reminderapp.puller.DatabaseProxy;
 import projects.hobbes.team.reminderapp.puller.Puller;
 
 public class MainActivity extends AppCompatActivity
@@ -111,6 +112,7 @@ public class MainActivity extends AppCompatActivity
                         parentIndex++;
                     }
                     expandableAdapter.notifyDataSetChanged();
+                    DatabaseProxy.setData();
                 }
             });
         }

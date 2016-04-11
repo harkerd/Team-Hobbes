@@ -92,6 +92,7 @@ public class DatabaseProxy extends SQLiteOpenHelper
             SettingsModel.setInstance(gson.fromJson(settingsJson, SettingsModel.class));
             RemindersModel.setInstance(gson.fromJson(remindersJson, RemindersModel.class));
         }
+        results.close();
     }
 
     public static void createAPIs()

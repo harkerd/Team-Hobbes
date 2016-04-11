@@ -117,7 +117,7 @@ public class Reminder {
             return r.app.equals(this.app) &&
                     r.message.equals(this.message) &&
                     r.contactName.equals(this.contactName) &&
-                    r.timeReceived.equals(this.timeReceived);
+                    r.timeReceived.toString().equals(this.timeReceived.toString());
         }
     }
 }
